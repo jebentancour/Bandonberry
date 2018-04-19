@@ -23,9 +23,14 @@ sudo pip install rtmidi-python
 ```
 ## GPIO expander
 El chip MCP23S17 es SPI, se debe habilitar SPI desde ```sudo raspi-config```.
-[Guia de Adafruit](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi)
-[Libreria Python](https://pypi.org/project/RPiMCP23S17/)
+
+[Guia de Adafruit](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi).
+
+[Libreria Python](https://pypi.org/project/RPiMCP23S17/).
+
 ```
 sudo apt-get install python-dev python-pip
+pip install RPi.GPIO
+pip install spidev
 pip install RPiMCP23S17
 ```
