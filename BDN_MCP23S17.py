@@ -1,15 +1,12 @@
 #!/usr/bin/python
 
 import spidev
-import RPi.GPIO as GPIO
-import time
 
 class MCP23S17(object):
     """This class provides an abstraction of the GPIO expander MCP23S17
     for the Raspberry Pi.
-    It is depndent on the Python packages spidev and RPi.GPIO, which can
-    be get from https://pypi.python.org/pypi/RPi.GPIO/0.5.11 and
-    https://pypi.python.org/pypi/spidev.
+    It is depndent on the Python packages spidev, which can
+    be get from https://pypi.python.org/pypi/spidev.
     """
     PULLUP_ENABLED = 0
     PULLUP_DISABLED = 1
@@ -273,24 +270,3 @@ class MCP23S17(object):
 
         self._writeRegister(register, data & 0xFF)
         self._writeRegister(register + 1, data >> 8)
-
-if __name__ == '__main__':
-    """The following demo periodically toggles the level of
-    all pins of two MCP23S17 conponents.
-    """
-
-    mcp1 = MCP23S17(ce=1)
-    mcp1.open()
-
-    for x in range(0, 16):
-        mcp1.setDirection(x, mcp1.DIR_OUTPUT)
-
-    print "Starting blinky on all pins (CTRL+C to quit)"
-    while (True):
-        for x in range(0, 16):
-            mcp1.digitalWrite(x, MCP23S17.LEVEL_HIGH)
-        time.sleep(0.2)
-
-        for x in range(0, 16):
-            mcp1.digitalWrite(x, MCP23S17.LEVEL_LOW)
-        time.sleep(0.2)

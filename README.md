@@ -25,11 +25,11 @@ El chip MCP23S17 es SPI, se debe habilitar SPI desde ```sudo raspi-config```.
 
 [Guía Adafruit](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi).
 
-[Libreria Python](https://pypi.org/project/RPiMCP23S17/).
+La libreria Python [RPiMCP23S17](https://pypi.org/project/RPiMCP23S17/) no finciono asi como esta, se le hicieron modificaciones para que funcionara.
+Se creo la libreria BDN_MCP23S17.
 
 ```
 sudo apt-get install python-dev python-pip
 sudo pip install RPi.GPIO
 sudo pip install spidev
-sudo pip install RPiMCP23S17
 ```
