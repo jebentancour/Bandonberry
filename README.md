@@ -83,12 +83,12 @@ The driver supports the following speeds (2014-07-05):
 | 16384| 15.2 kHz|            |
 | 32768| 7629 Hz |            |
 
+Una escritura o lectura necesita de la trasnmisión de 3 bytes **DEVICE OPCODE + REGISTER ADDRESS + REGISTER VALUE**.
+A la frecuencia seleccionada dicha tarea tarda, teóricamente, 3 * 8 / (7.8 MHz / 2) = **6.2 us**.
 
 ### Librería
 
-La librería [RPiMCP23S17](https://github.com/petrockblog/RPi-MCP23S17/blob/master/RPiMCP23S17/MCP23S17.py) no fincionó.
-
-Basados en esa librería se creó [BDN_MCP23S17.py](https://github.com/jebentancour/Bandonberry/blob/master/BDN_MCP23S17.py).
+La librería [RPiMCP23S17](https://github.com/petrockblog/RPi-MCP23S17/blob/master/RPiMCP23S17/MCP23S17.py) no fincionó. Basados en esa librería se creó [BDN_MCP23S17.py](https://github.com/jebentancour/Bandonberry/blob/master/BDN_MCP23S17.py).
 
 Requisitos previos:
 ```
