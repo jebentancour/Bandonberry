@@ -61,7 +61,7 @@ El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
 
 ### Linux driver
 
-The default Linux driver is spi-bcm2708.
+The default Linux driver is [spi-bcm2708](https://github.com/raspberrypi/linux/blob/rpi-3.12.y/drivers/spi/spi-bcm2708.c).
 
 The driver supports the following speeds (2014-07-05):
 
