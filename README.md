@@ -7,7 +7,7 @@ Se copia el script de instalación:
 ```
 sudo wget https://raw.githubusercontent.com/LowPowerLab/ATX-Raspi/master/shutdownchecksetup.sh
 ```
-Se editan los pines a usar ```nano shutdownchecksetup.sh```:
+Se editan los pines a usar ```sudo nano shutdownchecksetup.sh```:
 ```Python
 SHUTDOWN = 12     #GPIO used for shutdown signal
 BOOT = 16         #GPIO used for boot signal
@@ -58,6 +58,33 @@ sudo pip install rtmidi-python
 El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf) es SPI, se debe habilitar SPI desde ```sudo raspi-config```.
 
 [GUíA ADAFRUIT](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi).
+
+### Linux driver
+
+The default Linux driver is spi-bcm2708.
+
+The driver supports the following speeds (2014-07-05):
+
+|  cdiv|    speed|      config|
+|------|---------|------------|
+|     2|125.0 MHz|            |
+|     4| 62.5 MHz|            |
+|     8| 31.2 MHz|            |
+|    16| 15.6 MHz|            |
+|    32|  7.8 MHz| <- 10.0 MHz|
+|    64|  3.9 MHz|            |
+|   128| 1953 kHz|            |
+|   256|  976 kHz|            |
+|   512|  488 kHz|            |
+|  1024|  244 kHz|            |
+|  2048|  122 kHz|            |
+|  4096|   61 kHz|            |
+|  8192| 30.5 kHz|            |
+| 16384| 15.2 kHz|            |
+| 32768| 7629 Hz |            |
+
+
+### Librería
 
 La librería [RPiMCP23S17](https://github.com/petrockblog/RPi-MCP23S17/blob/master/RPiMCP23S17/MCP23S17.py) no fincionó.
 
