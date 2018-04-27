@@ -1,4 +1,30 @@
 # Bandonberry
+
+Uso de pines:
+
+|uso          |función        |pin     |pin     |función     |uso       |
+|-------------|---------------|--------|--------|------------|----------|
+|-            |3.3 V          |1       |2       |5 V         |-         | 
+|PRESION      |I2C1 SDA       |3       |4       |5 V         |-         | 
+|PRESION      |I2C1 SCL       |5       |6       |GND         |-         | 
+|             |GPIO 04        |7       |8       |UART0 TX    |-         | 
+|-            |GND            |9       |10      |UART0 RX    |-         | 
+|             |GPIO 17        |11      |12      |BITCLK      |AUDIO     |
+|             |GPIO 27        |13      |14      |GND         |-         |
+|             |GPIO 22        |15      |16      |GPIO 23     |          |
+|-            |3.3 V          |17      |18      |GPIO 24     |          |
+|TECLADO      |SPI0 MOSI      |19      |20      |GND         |-         |
+|TECLADO      |SPI0 MISO      |21      |22      |GPIO 25     |          |
+|TECLADO      |SPI0 SCLK      |23      |24      |SPI0 CS0    |TECLADO   |
+|-            |GND            |25      |26      |SPI0 CS1    |TECLADO   |
+|-            |EPROM          |27      |28      |EPROM       |-         |
+|             |GPIO 05        |29      |30      |GND         |-         |
+|             |GPIO 06        |31      |32      |GPIO 12     |BMS       |
+|             |GPIO 13        |33      |34      |GND         |-         |
+|AUDIO        |LRCLK          |35      |36      |GPIO 16     |BMS       |
+|             |GPIO 26        |37      |38      |GPIO 20     |          |
+|-            |GND            |39      |40      |DATAOUT     |AUDIO     | 
+
 ## RaspiATX
 
 El mecanismo de apagado es el de [RaspiATX](https://github.com/LowPowerLab/ATX-Raspi).
