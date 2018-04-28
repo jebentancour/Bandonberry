@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from BDN_MCP23S17 import MCP23S17
+import RPi.GPIO as GPIO
 import rtmidi_python as rtmidi
 import time
 import sys
@@ -10,6 +11,11 @@ NOTE = 60
 VELOCITY = 127
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
+
+PIN = 23
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(PIN, GPIO.OUT)
+GPIO.output(PIN, GPIO.LOW)
 
 try:
     midi_out = rtmidi.MidiOut()
@@ -38,7 +44,9 @@ try:
         if new_btn != old_btn:
             if new_btn == 0:
                 #print "Button pressed!"
+                GPIO.output(PIN, GPIO.HIGH)
                 midi_out.send_message([NOTE_ON, NOTE, VELOCITY])
+                GPIO.output(PIN, GPIO.LOW)
             else:
                 #print "Button released!"
                 midi_out.send_message([NOTE_OFF, NOTE, VELOCITY])
