@@ -63,7 +63,7 @@ sudo fluidsynth --audio-driver=alsa --gain 3 --verbose /home/pi/bandonberry/band
 ```
 Para que se inicie en el arranque se debe agregar la siguiente línea en ```/etc/rc.local```:
 ```
-sudo fluidsynth -i -s -a alsa -g 3 /home/pi/bandonberry/bandoneon_v2.sf2 &
+sudo fluidsynth -i -s -a alsa -g 3 -c 2 -z 64 /home/pi/bandonberry/bandoneon_v2.sf2 &
 ```
 
 ## Rtmidi python
