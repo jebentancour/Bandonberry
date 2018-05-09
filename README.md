@@ -1,6 +1,6 @@
 # Bandonberry
 
-# Raspberry Pi
+## Raspberry Pi
 
 [HARDWARE DOCUMENTATION](https://www.raspberrypi.org/documentation/hardware/raspberrypi/README.md)
 
