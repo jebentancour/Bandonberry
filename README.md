@@ -1,5 +1,9 @@
 # Bandonberry
 
+# Raspberry Pi
+
+[HARDWARE DOCUMENTATION](https://www.raspberrypi.org/documentation/hardware/raspberrypi/README.md)
+
 Uso de pines:
 
 |uso          |función        |pin     |pin     |función     |uso       |
@@ -61,6 +65,11 @@ Para usarlo con las soundfonts nuestras:
 ```
 sudo fluidsynth --audio-driver=alsa --gain 3 --verbose /home/pi/bandonberry/bandoneon_v2.sf2
 ```
+
+Se siguieron los consejos encontrados en [FLUIDSYNTH WIKI](https://sourceforge.net/p/fluidsynth/wiki/LowLatency/) para reducir la latencia.
+
+En particular se elige ```number of audio buffers = 2``` y ```audio buffer size = 64```.
+
 Para que se inicie en el arranque se debe agregar la siguiente línea en ```/etc/rc.local```:
 ```
 sudo fluidsynth -i -s -a alsa -g 3 -c 2 -z 64 /home/pi/bandonberry/bandoneon_v2.sf2 &
@@ -81,9 +90,7 @@ sudo pip install rtmidi-python
 
 ## GPIO expander
 
-El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf) es SPI, se debe habilitar SPI desde ```sudo raspi-config```.
-
-[GUíA ADAFRUIT](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi).
+El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf) es SPI, se debe habilitar SPI desde ```sudo raspi-config``` como se explica en la [GUíA ADAFRUIT](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi).
 
 ### Linux driver
 
@@ -114,7 +121,7 @@ A la frecuencia seleccionada dicha tarea tarda, teóricamente, 3 * 8 / (7.8 MHz 
 
 ### Librería
 
-La librería [RPiMCP23S17](https://github.com/petrockblog/RPi-MCP23S17/blob/master/RPiMCP23S17/MCP23S17.py) no fincionó. Basados en esa librería se creó [BDN_MCP23S17.py](https://github.com/jebentancour/Bandonberry/blob/master/BDN_MCP23S17.py).
+La librería [RPiMCP23S17](https://github.com/petrockblog/RPi-MCP23S17/blob/master/RPiMCP23S17/MCP23S17.py) no fincionó, basados en la mimsma se creó [BDN_MCP23S17.py](https://github.com/jebentancour/Bandonberry/blob/master/BDN_MCP23S17.py).
 
 Requisitos previos:
 ```
