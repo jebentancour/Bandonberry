@@ -88,6 +88,8 @@ sudo apt-get install python-dev python-pip
 sudo pip install rtmidi-python
 ```
 
+[MIDI Tutorial](http://www.music-software-development.com/midi-tutorial.html)
+
 ## GPIO expander
 
 El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf) es SPI, se debe habilitar SPI desde ```sudo raspi-config``` como se explica en la [GUíA ADAFRUIT](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi).
