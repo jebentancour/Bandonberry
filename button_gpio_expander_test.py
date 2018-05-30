@@ -23,7 +23,7 @@ try:
     for port_name in midi_out.ports:
         if MIDI_PORT_NAME in port_name:
             midi_out.open_port(port_name)
-            print "MIDI port foun!"
+            print "MIDI port found!"
             port_found = True
     if not port_found:
         print "MIDI port not found, exit."
