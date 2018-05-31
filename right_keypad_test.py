@@ -11,6 +11,13 @@ VELOCITY = 127
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
 
+# Creates a list containing 5 lists, each of 8 items, all set to 0
+w, h = 8, 6;
+right_notes_matrix = [[0 for x in range(w)] for y in range(h)]
+
+prev_data = [65279, 65023, 64511, 63487, 61439, 57343]
+new_data = [0 for x in range(6)]
+
 try:
     midi_out = rtmidi.MidiOut()
     port_found = False
@@ -36,7 +43,7 @@ try:
         mcp1.setDirection(x, mcp1.DIR_OUTPUT)
         mcp1.digitalWrite(x, MCP23S17.LEVEL_HIGH)
 
-    time.sleep(1)
+    #time.sleep(1)
 
     #old_btn = 1
     #
@@ -62,10 +69,14 @@ try:
 
             mcp1.digitalWrite(x, MCP23S17.LEVEL_LOW)
 
-            data = mcp1.readGPIO()
-            print '{0:b}'.format(data)
+            new_data[x-8] = mcp1.readGPIO()
 
-        print 'END'
+            if new_data[x-8] != prev_data[x-8]:
+                print new_data
+
+            prev_data[x-8] = new_data[x-8]
+
+        #print '{0:b}'.format(data)
         time.sleep(0.2)
 
 finally:
