@@ -24,7 +24,7 @@ try:
     for port_name in midi_out.ports:
         if MIDI_PORT_NAME in port_name:
             midi_out.open_port(port_name)
-            print "MIDI port found!"
+            print "MIDI port found."
             port_found = True
     if not port_found:
         print "MIDI port not found, exit."
@@ -76,7 +76,7 @@ try:
 
             prev_data[x-8] = new_data[x-8]
 
-        #print '{0:b}'.format(data)
+        #print '{0:b}'.format(new_data)
         time.sleep(0.2)
 
 finally:
