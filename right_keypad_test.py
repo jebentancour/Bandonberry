@@ -6,7 +6,6 @@ import time
 import sys
 
 MIDI_PORT_NAME = "FLUID"
-NOTE = 60
 VELOCITY = 127
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
@@ -14,6 +13,9 @@ NOTE_OFF = 0x80
 # Creates a list containing 5 lists, each of 8 items, all set to 0
 w, h = 8, 6;
 right_notes_matrix = [[0 for x in range(w)] for y in range(h)]
+right_notes_matrix[4][3] = 59
+right_notes_matrix[4][4] = 65
+right_notes_matrix[5][3] = 43
 
 prev_data = [65279, 65023, 64511, 63487, 61439, 57343]
 new_data = [0 for x in range(6)]
@@ -43,23 +45,6 @@ try:
         mcp1.setDirection(x, mcp1.DIR_OUTPUT)
         mcp1.digitalWrite(x, MCP23S17.LEVEL_HIGH)
 
-    #time.sleep(1)
-
-    #old_btn = 1
-    #
-    #print "Starting reading pin A0 (CTRL+C to quit)"
-    #while (True):
-    #    new_btn = mcp1.digitalRead(12)
-    #    if new_btn != old_btn:
-    #        if new_btn == 0:
-    #            #print "Button pressed!"
-    #            midi_out.send_message([NOTE_ON, NOTE, VELOCITY])
-    #        else:
-    #            #print "Button released!"
-    #            midi_out.send_message([NOTE_OFF, NOTE, VELOCITY])
-    #
-    #    old_btn = new_btn
-
     while (True):
         for x in range(8, 14):
             if x == 8:
@@ -72,11 +57,22 @@ try:
             new_data[x-8] = mcp1.readGPIO()
 
             if new_data[x-8] != prev_data[x-8]:
-                print new_data
+                for y in range(8):
+                    new_bit = (new_data[x-8] >> y) & 0x01
+                    prev_bit = (prev_data[x-8] >> y) & 0x01
+                    if new_bit != prev_bit:
+                        #print '{0}:{1:b} > {2} {3:b}'.format(x-8, new_data[x-8] & 0xFF, y, new_bit)
+                        if new_bit:
+                            note = right_notes_matrix[x-8][y]
+                            midi_out.send_message([NOTE_OFF, note, VELOCITY])
+                            print 'Note OFF [{0}][{1}] {2}'.format(x-8, y, note)
+                        else:
+                            note = right_notes_matrix[x-8][y]
+                            midi_out.send_message([NOTE_ON, note, VELOCITY])
+                            print 'Note ON [{0}][{1}] {2}'.format(x-8, y, note)
 
             prev_data[x-8] = new_data[x-8]
 
-        #print '{0:b}'.format(new_data)
         time.sleep(0.2)
 
 finally:
