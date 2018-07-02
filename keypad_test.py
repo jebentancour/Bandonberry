@@ -13,9 +13,9 @@ NOTE_OFF = 0x80
 # Creates a list containing 5 lists, each of 8 items, all set to 0
 w, h = 8, 6;
 right_notes_matrix = [[0 for x in range(w)] for y in range(h)]
-right_notes_matrix[4][3] = 59
-right_notes_matrix[4][4] = 65
-right_notes_matrix[5][3] = 43
+#right_notes_matrix[4][3] = 59
+#right_notes_matrix[4][4] = 65
+#right_notes_matrix[5][3] = 43
 
 prev_data = [65279, 65023, 64511, 63487, 61439, 57343]
 new_data = [0 for x in range(6)]
@@ -63,17 +63,19 @@ try:
                     if new_bit != prev_bit:
                         #print '{0}:{1:b} > {2} {3:b}'.format(x-8, new_data[x-8] & 0xFF, y, new_bit)
                         if new_bit:
-                            note = right_notes_matrix[x-8][y]
+                            #note = right_notes_matrix[x-8][y]
+                            note = 40 + (x-8)*10 + y
                             midi_out.send_message([NOTE_OFF, note, VELOCITY])
                             print 'Note OFF [{0}][{1}] {2}'.format(x-8, y, note)
                         else:
-                            note = right_notes_matrix[x-8][y]
+                            #note = right_notes_matrix[x-8][y]
+                            note = 40 + (x-8)*10 + y
                             midi_out.send_message([NOTE_ON, note, VELOCITY])
                             print 'Note ON [{0}][{1}] {2}'.format(x-8, y, note)
 
             prev_data[x-8] = new_data[x-8]
 
-        time.sleep(0.2)
+        #time.sleep(0.2)
 
 finally:
     mcp1.close()
