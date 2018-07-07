@@ -8,26 +8,26 @@ Uso de pines:
 
 |uso          |función        |pin     |pin     |función     |uso       |
 |-------------|---------------|--------|--------|------------|----------|
-|-            |3.3 V          |1       |2       |5 V         |-         | 
-|PRESION      |I2C1 SDA       |3       |4       |5 V         |-         | 
-|PRESION      |I2C1 SCL       |5       |6       |GND         |-         | 
-|             |GPIO 04        |7       |8       |UART0 TX    |-         | 
-|-            |GND            |9       |10      |UART0 RX    |-         | 
+|3.3 V        |3.3 V          |1       |2       |5 V         |5 V       | 
+|PRESION      |I2C1 SDA       |3       |4       |5 V         |5 V       | 
+|PRESION      |I2C1 SCL       |5       |6       |GND         |GND       | 
+|             |GPIO 04        |7       |8       |UART0 TX    |          | 
+|GND          |GND            |9       |10      |UART0 RX    |          | 
 |             |GPIO 17        |11      |12      |BITCLK      |AUDIO     |
-|             |GPIO 27        |13      |14      |GND         |-         |
+|             |GPIO 27        |13      |14      |GND         |GND       |
 |             |GPIO 22        |15      |16      |GPIO 23     |          |
-|-            |3.3 V          |17      |18      |GPIO 24     |          |
-|TECLADO      |SPI0 MOSI      |19      |20      |GND         |-         |
+|3.3 V        |3.3 V          |17      |18      |GPIO 24     |          |
+|TECLADO      |SPI0 MOSI      |19      |20      |GND         |GND       |
 |TECLADO      |SPI0 MISO      |21      |22      |GPIO 25     |          |
 |TECLADO      |SPI0 SCLK      |23      |24      |SPI0 CS0    |TECLADO   |
-|-            |GND            |25      |26      |SPI0 CS1    |TECLADO   |
-|-            |EPROM          |27      |28      |EPROM       |-         |
-|             |GPIO 05        |29      |30      |GND         |-         |
+|GND          |GND            |25      |26      |SPI0 CS1    |TECLADO   |
+|             |EPROM          |27      |28      |EPROM       |          |
+|             |GPIO 05        |29      |30      |GND         |GND       |
 |             |GPIO 06        |31      |32      |GPIO 12     |BMS       |
-|             |GPIO 13        |33      |34      |GND         |-         |
+|             |GPIO 13        |33      |34      |GND         |GND       |
 |AUDIO        |LRCLK          |35      |36      |GPIO 16     |BMS       |
 |             |GPIO 26        |37      |38      |GPIO 20     |          |
-|-            |GND            |39      |40      |DATAOUT     |AUDIO     | 
+|GND          |GND            |39      |40      |DATAOUT     |AUDIO     | 
 
 ## RaspiATX
 
@@ -139,7 +139,28 @@ from BDN_MCP23S17 import MCP23S17
 
 ## PCB
 
-|Item               |mil   |mm    |
+MCP23S17 pinout:
+
+|uso       |función |pin     |pin     |función |uso       |
+|----------|--------|--------|--------|--------|----------|
+|COL 0     |B0      |1       |28      |A7      |FILA 7    | 
+|COL 1     |B1      |2       |27      |A6      |FILA 6    | 
+|COL 2     |B2      |3       |26      |A5      |FILA 5    | 
+|COL 3     |B3      |4       |25      |A4      |FILA 4    | 
+|COL 4     |B4      |5       |24      |A3      |FILA 3    | 
+|COL 5     |B5      |6       |23      |A2      |FILA 2    |
+|          |B6      |7       |22      |A1      |FILA 1    |
+|          |B7      |8       |21      |A0      |FILA 0    |
+|3.3 V     |VDD     |9       |20      |INTA    |          |
+|GND       |VSS     |10      |19      |INTB    |          |
+|CS0 o CS1 |nCS     |11      |18      |nRESET  |3.3 V     |
+|SPI0 SCLK |SCK     |12      |17      |A2      |GND       |
+|SPI0 MISI |SI      |13      |16      |A1      |GND       |
+|SPI0 MISO |SO      |14      |15      |A0      |GND       |
+
+Restricciones de JLCPCB:
+
+|item               |mil   |mm    |
 |-------------------|------|------|
 |Min. Trace         | 5.000|0.127 |
 |Min. Spacing       | 5.000|0.127 |
