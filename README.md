@@ -155,7 +155,7 @@ MCP23S17 pinout:
 |GND       |VSS     |10      |19      |INTB    |          |
 |CS0 o CS1 |nCS     |11      |18      |nRESET  |3.3 V     |
 |SPI0 SCLK |SCK     |12      |17      |A2      |GND       |
-|SPI0 MISI |SI      |13      |16      |A1      |GND       |
+|SPI0 MOSI |SI      |13      |16      |A1      |GND       |
 |SPI0 MISO |SO      |14      |15      |A0      |GND       |
 
 Restricciones de JLCPCB:
