@@ -137,7 +137,7 @@ Para usarlo (tiene que estar en el mismo directorio):
 from BDN_MCP23S17 import MCP23S17
 ```
 
-## Pinout
+### Pinout
 
 |uso       |función |pin     |pin     |función |uso       |
 |----------|--------|--------|--------|--------|----------|
