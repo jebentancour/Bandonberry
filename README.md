@@ -137,9 +137,7 @@ Para usarlo (tiene que estar en el mismo directorio):
 from BDN_MCP23S17 import MCP23S17
 ```
 
-## PCB
-
-MCP23S17 pinout:
+## Pinout
 
 |uso       |función |pin     |pin     |función |uso       |
 |----------|--------|--------|--------|--------|----------|
@@ -149,14 +147,16 @@ MCP23S17 pinout:
 |COL 3     |B3      |4       |25      |A4      |FILA 4    | 
 |COL 4     |B4      |5       |24      |A3      |FILA 3    | 
 |COL 5     |B5      |6       |23      |A2      |FILA 2    |
-|          |B6      |7       |22      |A1      |FILA 1    |
-|          |B7      |8       |21      |A0      |FILA 0    |
-|3.3 V     |VDD     |9       |20      |INTA    |          |
-|GND       |VSS     |10      |19      |INTB    |          |
+|LIBRE     |B6      |7       |22      |A1      |FILA 1    |
+|LIBRE     |B7      |8       |21      |A0      |FILA 0    |
+|3.3 V     |VDD     |9       |20      |INTA    |NC        |
+|GND       |VSS     |10      |19      |INTB    |NC        |
 |CS0 o CS1 |nCS     |11      |18      |nRESET  |3.3 V     |
 |SPI0 SCLK |SCK     |12      |17      |A2      |GND       |
 |SPI0 MOSI |SI      |13      |16      |A1      |GND       |
 |SPI0 MISO |SO      |14      |15      |A0      |GND       |
+
+## PCB
 
 Restricciones de JLCPCB:
 
