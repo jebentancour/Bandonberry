@@ -5,16 +5,19 @@ import rtmidi_python as rtmidi
 import time
 
 MIDI_PORT_NAME = "FLUID"
-VELOCITY = 127
+VELOCITY = 64
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
+CONTROL = 0xB0
+CUSTOM = 0x09
 
 COLUMS = 6
 ROWS = 8
 NUM_OF_READS = 2
 DEBOUNCE_DELAY = 0.001
 
-current_dir = 1 # 0 = Abriendo, 1 = Cerrando
+current_dir = 0 # 0 = Abriendo, 1 = Cerrando
+new_dir = 0
 
 right_notes_matrix = [[[0, 0] for x in range(ROWS)] for y in range(COLUMS)]
 # Mano Derecha
@@ -98,19 +101,34 @@ left_notes_matrix[4][4] = [ 44, 44]
 right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
+def callback(message, time_stamp):
+    global new_dir
+    #print message
+    if message[0] == CONTROL and message[1] == CUSTOM:
+        if message[2] == 0:
+            #print "Abriendo"
+            new_dir = 0
+        else:
+            #print "Cerrando"
+            new_dir = 1
+
 try:
-    midi_out = rtmidi.MidiOut()
+    midi_out = rtmidi.MidiOut("KEYPAD")
     port_found = False
     for port_name in midi_out.ports:
         if MIDI_PORT_NAME in port_name:
             midi_out.open_port(port_name)
-            print "MIDI port found."
+            #print "MIDI port found."
             port_found = True
             for note in range(128):
                 midi_out.send_message([NOTE_OFF, note, VELOCITY])
     if not port_found:
-        print "MIDI port not found, exit."
+        #print "MIDI port not found, exit."
         sys.exit()
+
+    midi_in = rtmidi.MidiIn()
+    midi_in.callback = callback
+    midi_in.open_port()
 
     # Izquierda
     mcp1 = MCP23S17(ce=1)
@@ -145,11 +163,11 @@ try:
                         if new_bit:
                             note = left_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_OFF, note, VELOCITY])
-                            print 'left_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
+                            #print 'left_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = left_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_ON, note, VELOCITY])
-                            print 'left_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
+                            #print 'left_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
             if right_prev_data[current_col] != right_new_data[current_col]:
                 for current_row in range(ROWS):
                     new_bit = (right_new_data[current_col] >> current_row) & 0x01
@@ -158,13 +176,21 @@ try:
                         if new_bit:
                             note = right_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_OFF, note, VELOCITY])
-                            print 'right_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
+                            #print 'right_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = right_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_ON, note, VELOCITY])
-                            print 'right_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
+                            #print 'right_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
         left_prev_data = left_new_data
         right_prev_data = right_new_data
+
+        if new_dir != current_dir:
+            #print "New dir!"
+            current_dir = new_dir
+            right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+            left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+            for note in range(128):
+                midi_out.send_message([NOTE_OFF, note, VELOCITY])
 
 finally:
     mcp1.close()

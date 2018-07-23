@@ -6,7 +6,10 @@ import time
 
 PIN = 23
 
-MIDI_PORT_NAME = "FLUID"
+NOTE_ON = 0x90
+NOTE_OFF = 0x80
+
+MIDI_PORT_NAME = "keypad_in_test"
 NOTE = 60
 VELOCITY = 20
 DURATION = 2
@@ -23,9 +26,9 @@ for port_name in midi_out.ports:
         #GPIO.output(PIN, GPIO.HIGH)
         #GPIO.output(PIN, GPIO.LOW)
         GPIO.output(PIN, GPIO.HIGH)
-        midi_out.send_message([0x90, NOTE, VELOCITY])
+        midi_out.send_message([NOTE_ON, NOTE, VELOCITY])
         GPIO.output(PIN, GPIO.LOW)
         time.sleep(DURATION)
-        midi_out.send_message([0x80, NOTE, VELOCITY])
+        midi_out.send_message([NOTE_OFF, NOTE, VELOCITY])
 
 GPIO.cleanup()
