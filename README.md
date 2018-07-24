@@ -51,12 +51,17 @@ sudo reboot
 
 ## Audio
 
+[Adafruit MAX98357 I2S Class-D Mono Amp](https://learn.adafruit.com/adafruit-max98357-i2s-class-d-mono-amp/overview)
+
+Correr el comando dos veces:
+```
+curl -sS https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2samp.sh | bash
+```
+
 Para ver una lista de los dispositivos de audio:
 ```
 aplay -l
 ```
-
-[Adafruit MAX98357 I2S Class-D Mono Amp](https://learn.adafruit.com/adafruit-max98357-i2s-class-d-mono-amp/overview)
 
 ## MIDI
 
