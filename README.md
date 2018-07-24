@@ -39,13 +39,41 @@ sudo wget https://raw.githubusercontent.com/LowPowerLab/ATX-Raspi/master/shutdow
 ```
 Se editan los pines a usar ```sudo nano shutdownchecksetup.sh```:
 ```Python
-SHUTDOWN = 12     #GPIO used for shutdown signal
-BOOT = 16         #GPIO used for boot signal
+SHUTDOWN = 12     # GPIO used for shutdown signal
+BOOT = 16         # GPIO used for boot signal
 ```
 Se instala eligiendo la opción 1:
 ```
 sudo bash shutdownchecksetup.sh
 sudo rm shutdownchecksetup.sh
+sudo reboot
+```
+
+## Audio
+
+Para ver una lista de los dispositivos de audio:
+```
+aplay -l
+```
+
+[Adafruit MAX98357 I2S Class-D Mono Amp](https://learn.adafruit.com/adafruit-max98357-i2s-class-d-mono-amp/overview)
+
+## MIDI
+
+[MIDI TUTORIAL](http://www.music-software-development.com/midi-tutorial.html)
+
+Para ver una lista de los dispositivos MIDI:
+```
+aplaymidi -l
+```
+
+[Raspberry Pi Zero OTG Mode](https://gist.github.com/gbaman/50b6cca61dd1c3f88f41)
+
+Para activar la interfaz MIDI USB:
+```
+echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
+echo "dwc2" | sudo tee -a /etc/modules
+echo "g_midi" | sudo tee -a /etc/modules
 sudo reboot
 ```
 
@@ -87,8 +115,6 @@ sudo apt-get install libjack-jackd2-dev
 sudo apt-get install python-dev python-pip
 sudo pip install rtmidi-python
 ```
-
-[MIDI Tutorial](http://www.music-software-development.com/midi-tutorial.html)
 
 ## GPIO expander
 
@@ -147,10 +173,10 @@ from BDN_MCP23S17 import MCP23S17
 |COL 3     |B3      |4       |25      |A4      |FILA 4    | 
 |COL 4     |B4      |5       |24      |A3      |FILA 3    | 
 |COL 5     |B5      |6       |23      |A2      |FILA 2    |
-|LIBRE     |B6      |7       |22      |A1      |FILA 1    |
-|LIBRE     |B7      |8       |21      |A0      |FILA 0    |
-|3.3 V     |VDD     |9       |20      |INTA    |NC        |
-|GND       |VSS     |10      |19      |INTB    |NC        |
+|          |B6      |7       |22      |A1      |FILA 1    |
+|          |B7      |8       |21      |A0      |FILA 0    |
+|3.3 V     |VDD     |9       |20      |INTA    |          |
+|GND       |VSS     |10      |19      |INTB    |          |
 |CS0 o CS1 |nCS     |11      |18      |nRESET  |3.3 V     |
 |SPI0 SCLK |SCK     |12      |17      |A2      |GND       |
 |SPI0 MOSI |SI      |13      |16      |A1      |GND       |
