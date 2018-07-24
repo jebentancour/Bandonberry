@@ -63,25 +63,6 @@ Para ver una lista de los dispositivos de audio:
 aplay -l
 ```
 
-## MIDI
-
-[MIDI TUTORIAL](http://www.music-software-development.com/midi-tutorial.html)
-
-Para ver una lista de los dispositivos MIDI:
-```
-aplaymidi -l
-```
-
-[Raspberry Pi Zero OTG Mode](https://gist.github.com/gbaman/50b6cca61dd1c3f88f41)
-
-Para activar la interfaz MIDI USB:
-```
-echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
-echo "dwc2" | sudo tee -a /etc/modules
-echo "g_midi" | sudo tee -a /etc/modules
-sudo reboot
-```
-
 ## Fluidsynth
 
 [FLUIDSYNTH USER MANUAL](https://github.com/FluidSynth/fluidsynth/wiki/UserManual)
@@ -197,3 +178,23 @@ Restricciones de JLCPCB:
 |Min. Spacing       | 5.000|0.127 |
 |Min. Via hole size |11.811|0.300 |
 |Min. Via diameter  |23.622|0.600 |
+
+## MIDI USB
+
+[MIDI TUTORIAL](http://www.music-software-development.com/midi-tutorial.html)
+
+Para ver una lista de los dispositivos MIDI:
+```
+aplaymidi -l
+```
+
+[Raspberry Pi Zero OTG Mode](https://gist.github.com/gbaman/50b6cca61dd1c3f88f41)
+
+Para activar la interfaz MIDI USB:
+```
+echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
+echo "dwc2" | sudo tee -a /etc/modules
+echo "g_midi" | sudo tee -a /etc/modules
+sudo reboot
+```
+
