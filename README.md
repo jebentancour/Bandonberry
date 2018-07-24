@@ -96,7 +96,7 @@ sudo fluidsynth --audio-driver=alsa --gain 3 --verbose /usr/share/sounds/sf2/Flu
 ```
 Para usarlo con las soundfonts nuestras:
 ```
-sudo fluidsynth --audio-driver=alsa --gain 3 --verbose /home/pi/bandonberry/bandoneon_v2.sf2
+sudo fluidsynth --audio-driver=alsa --gain 3 --verbose /home/pi/Bandonberry/bandoneon_v2.sf2
 ```
 
 Se siguieron los consejos encontrados en [FLUIDSYNTH WIKI](https://sourceforge.net/p/fluidsynth/wiki/LowLatency/) para reducir la latencia.
@@ -105,7 +105,7 @@ En particular se elige ```number of audio buffers = 2``` y ```audio buffer size 
 
 Para que se inicie en el arranque se debe agregar la siguiente línea en ```/etc/rc.local```:
 ```
-sudo fluidsynth -i -s -a alsa -g 3 -c 2 -z 64 /home/pi/bandonberry/bandoneon_v2.sf2 &
+sudo fluidsynth -i -s -a alsa -g 3 -c 2 -z 64 /home/pi/Bandonberry/bandoneon_v2.sf2 &
 ```
 
 ## Rtmidi python
