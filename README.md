@@ -108,9 +108,9 @@ El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
 
 ### Linux driver
 
-The default Linux driver is [spi-bcm2708](https://github.com/raspberrypi/linux/blob/rpi-3.12.y/drivers/spi/spi-bcm2708.c).
+El driver por defecto es: [spi-bcm2708](https://github.com/raspberrypi/linux/blob/rpi-3.12.y/drivers/spi/spi-bcm2708.c).
 
-The driver supports the following speeds (2014-07-05):
+Soporta las siguientes velocidades (2014-07-05):
 
 |  cdiv|    speed|      config|
 |------|---------|------------|
@@ -131,7 +131,7 @@ The driver supports the following speeds (2014-07-05):
 | 32768| 7629 Hz |            |
 
 Una escritura o lectura necesita de la trasnmisión de 3 bytes **DEVICE OPCODE + REGISTER ADDRESS + REGISTER VALUE**.
-A la frecuencia seleccionada dicha tarea tarda, teóricamente, 3 * 8 / (7.8 MHz / 2) = **6.2 us**.
+A la frecuencia seleccionada dicha tarea tarda, teóricamente: 3 * 8 / (7.8 MHz / 2) = **6.2 us**.
 
 ### Librería
 
