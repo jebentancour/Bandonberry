@@ -15,7 +15,7 @@ Uso de pines:
 |GND          |GND            |9       |10      |UART0 RX    |          | 
 |             |GPIO 17        |11      |12      |BITCLK      |AUDIO     |
 |             |GPIO 27        |13      |14      |GND         |GND       |
-|             |GPIO 22        |15      |16      |GPIO 23     |          |
+|             |GPIO 22        |15      |16      |GPIO 23     |LED       |
 |3.3 V        |3.3 V          |17      |18      |GPIO 24     |          |
 |TECLADO      |SPI0 MOSI      |19      |20      |GND         |GND       |
 |TECLADO      |SPI0 MISO      |21      |22      |GPIO 25     |          |
@@ -108,9 +108,9 @@ El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
 
 ### Linux driver
 
-The default Linux driver is [spi-bcm2708](https://github.com/raspberrypi/linux/blob/rpi-3.12.y/drivers/spi/spi-bcm2708.c).
+El driver por defecto es: [spi-bcm2708](https://github.com/raspberrypi/linux/blob/rpi-3.12.y/drivers/spi/spi-bcm2708.c).
 
-The driver supports the following speeds (2014-07-05):
+Soporta las siguientes velocidades (2014-07-05):
 
 |  cdiv|    speed|      config|
 |------|---------|------------|
@@ -131,7 +131,7 @@ The driver supports the following speeds (2014-07-05):
 | 32768| 7629 Hz |            |
 
 Una escritura o lectura necesita de la trasnmisión de 3 bytes **DEVICE OPCODE + REGISTER ADDRESS + REGISTER VALUE**.
-A la frecuencia seleccionada dicha tarea tarda, teóricamente, 3 * 8 / (7.8 MHz / 2) = **6.2 us**.
+A la frecuencia seleccionada dicha tarea tarda, teóricamente: 3 * 8 / (7.8 MHz / 2) = **6.2 us**.
 
 ### Librería
 
@@ -198,3 +198,8 @@ echo "g_midi" | sudo tee -a /etc/modules
 sudo reboot
 ```
 
+:warning: Esto cambia el dispositivo de reproducción por defecto, es necesario arreglar el inicio del sintetizador:
+
+```
+sudo fluidsynth -i -s -a alsa -o audio.alsa.device=hw:1,0 -g 3 -c 2 -z 64 /home/pi/Bandonberry/bandoneon_v2.sf2 &
+```
