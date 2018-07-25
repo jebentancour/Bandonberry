@@ -4,7 +4,10 @@ from BDN_MCP23S17 import MCP23S17
 import rtmidi_python as rtmidi
 import time
 
-MIDI_PORT_NAME = "FLUID"
+KEYPAD_PORT_NAME = "KEYPAD"
+SYNTH_PORT_NAME = "FLUID"
+USB_PORT_NAME = "f_midi"
+
 VELOCITY = 64
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
@@ -113,22 +116,34 @@ def callback(message, time_stamp):
             new_dir = 1
 
 try:
-    midi_out = rtmidi.MidiOut("KEYPAD")
+    midi_out = rtmidi.MidiOut(KEYPAD_PORT_NAME)
     port_found = False
     for port_name in midi_out.ports:
-        if MIDI_PORT_NAME in port_name:
+        if SYNTH_PORT_NAME in port_name:
             midi_out.open_port(port_name)
-            #print "MIDI port found."
+            print "Synth MIDI port found."
             port_found = True
             for note in range(128):
                 midi_out.send_message([NOTE_OFF, note, VELOCITY])
     if not port_found:
-        #print "MIDI port not found, exit."
+        print "Synth MIDI port not found, exit."
+        sys.exit()
+
+    midi_usb_out = rtmidi.MidiOut()
+    port_found = False
+    for port_name in midi_out.ports:
+        if USB_PORT_NAME in port_name:
+            midi_usb_out.open_port(port_name)
+            print "USB MIDI port found."
+            port_found = True
+    if not port_found:
+        print "USB MIDI port not found, exit."
         sys.exit()
 
     midi_in = rtmidi.MidiIn()
     midi_in.callback = callback
     midi_in.open_port()
+    print "Keypad MIDI port opened."
 
     # Izquierda
     mcp1 = MCP23S17(ce=1)
@@ -163,10 +178,12 @@ try:
                         if new_bit:
                             note = left_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_OFF, note, VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
                             #print 'left_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = left_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_ON, note, VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON, note, VELOCITY])
                             #print 'left_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
             if right_prev_data[current_col] != right_new_data[current_col]:
                 for current_row in range(ROWS):
@@ -176,10 +193,12 @@ try:
                         if new_bit:
                             note = right_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_OFF, note, VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
                             #print 'right_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = right_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_ON, note, VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON, note, VELOCITY])
                             #print 'right_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
         left_prev_data = left_new_data
         right_prev_data = right_new_data
@@ -191,7 +210,11 @@ try:
             left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
             for note in range(128):
                 midi_out.send_message([NOTE_OFF, note, VELOCITY])
+                midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
 
 finally:
     mcp1.close()
     mcp0.close()
+    midi_in.close_port()
+    midi_out.close_port()
+    midi_usb_out.close_port()
