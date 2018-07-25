@@ -15,7 +15,7 @@ Uso de pines:
 |GND          |GND            |9       |10      |UART0 RX    |          | 
 |             |GPIO 17        |11      |12      |BITCLK      |AUDIO     |
 |             |GPIO 27        |13      |14      |GND         |GND       |
-|             |GPIO 22        |15      |16      |GPIO 23     |          |
+|             |GPIO 22        |15      |16      |GPIO 23     |LED       |
 |3.3 V        |3.3 V          |17      |18      |GPIO 24     |          |
 |TECLADO      |SPI0 MOSI      |19      |20      |GND         |GND       |
 |TECLADO      |SPI0 MISO      |21      |22      |GPIO 25     |          |
