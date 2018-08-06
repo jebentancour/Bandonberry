@@ -203,3 +203,17 @@ sudo reboot
 ```
 sudo fluidsynth -i -s -a alsa -o audio.alsa.device=hw:1,0 -g 3 -c 2 -z 64 /home/pi/Bandonberry/bandoneon_v2.sf2 &
 ```
+
+## Sensor de presión
+
+El chip [BMP180](https://cdn-shop.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf) es I2C, se debe habilitar I2C desde ```sudo raspi-config``` como se explica en la [GUíA ADAFRUIT](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c).
+
+Para detectar los dispositivos I2C:
+
+```
+sudo i2cdetect -y 1
+```
+
+### Librería
+
+[Using the BMP085/180 with Raspberry Pi](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi/overview)
