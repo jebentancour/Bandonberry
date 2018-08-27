@@ -22,7 +22,11 @@ SYNTH_PORT_NAME = "FLUID"
 KEYPAD_PORT_NAME = "KEYPAD"
 
 ## Presión atmosférica
-media = 101800
+presion = 0
+for i in range(10):
+    presion += sensor.read_pressure()
+media = presion / 10
+print('Presion atm. = {0:0.2f} Pa'.format(media))
 
 ## Sensibilidad (menor más sensible)
 sensibilidad = 5
@@ -31,7 +35,7 @@ sensibilidad = 5
 tope = 127
 
 ## MINIMO
-min = 30
+min = 0
 
 # Me conecto con el puerto MIDI del sintetizador
 midi_out1 = rtmidi.MidiOut()
