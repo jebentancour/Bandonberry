@@ -121,7 +121,7 @@ def callback(message, time_stamp):
 try:
     midi_out = rtmidi.MidiOut(KEYPAD_PORT_NAME)
     port_found = False
-    while !port_found:
+    while not port_found:
         for port_name in midi_out.ports:
             if SYNTH_PORT_NAME in port_name:
                 midi_out.open_port(port_name)
