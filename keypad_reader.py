@@ -121,16 +121,14 @@ def callback(message, time_stamp):
 try:
     midi_out = rtmidi.MidiOut(KEYPAD_PORT_NAME)
     port_found = False
-    for port_name in midi_out.ports:
-        if SYNTH_PORT_NAME in port_name:
-            midi_out.open_port(port_name)
-            print "Synth MIDI port found."
-            port_found = True
-            for note in range(128):
-                midi_out.send_message([NOTE_OFF, note, VELOCITY])
-    if not port_found:
-        print "Synth MIDI port not found, exit."
-        sys.exit()
+    while !port_found:
+        for port_name in midi_out.ports:
+            if SYNTH_PORT_NAME in port_name:
+                midi_out.open_port(port_name)
+                print "Synth MIDI port found."
+                port_found = True
+                for note in range(128):
+                    midi_out.send_message([NOTE_OFF, note, VELOCITY])
 
     midi_usb_out = rtmidi.MidiOut()
     port_found = False
@@ -163,7 +161,7 @@ try:
     mcp0.setPullupPORTA(0xFF)
     mcp0.setPullupPORTB(0xC0)
 
-    while (True):
+    while True:
         left_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         right_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         for current_col in range(COLUMS):
