@@ -214,6 +214,18 @@ Para detectar los dispositivos I2C:
 sudo i2cdetect -y 1
 ```
 
+Si el sensor está bien conectado debe aparecer en la dirección 0x77.
+
 ### Librería
 
 [Using the BMP085/180 with Raspberry Pi](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi/overview)
+
+Para instalarla:
+
+```
+sudo apt-get update
+sudo apt-get install git build-essential python-dev python-smbus
+git clone https://github.com/adafruit/Adafruit_Python_BMP.git
+cd Adafruit_Python_BMP
+sudo python setup.py install
+```
