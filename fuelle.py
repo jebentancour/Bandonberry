@@ -21,14 +21,14 @@ VOLUME = 0x07
 SYNTH_PORT_NAME = "FLUID"
 KEYPAD_PORT_NAME = "KEYPAD"
 
-## Presión atmosférica 
-media= 101800
+## Presión atmosférica
+media = 101800
 
 ## Sensibilidad (menor más sensible)
-sensibilidad= 5
+sensibilidad = 5
 
 ## TOPE
-tope= 127
+tope = 127
 
 midi_out1 = rtmidi.MidiOut()
 for port_name in midi_out1.ports:
@@ -41,7 +41,7 @@ for port_name in midi_out1.ports:
                 midi_out2.open_port(port_name) # Me conecto con el puerto MIDI del teclado
                 print "Puerto KeyPad encontrado"
                 presion= sensor.read_pressure()
-                if (presion-media)>0: 
+                if (presion-media)>0:
                     estado= 1 ## Cerrando
                 else:
                     estado= 0 ## Abriendo
@@ -63,4 +63,3 @@ for port_name in midi_out1.ports:
                     else:
                         midi_out1.send_message([CONTROL, VOLUME, tope])
                     #time.sleep(0.002)
-                    

@@ -4,30 +4,27 @@ from BDN_MCP23S17 import MCP23S17
 import rtmidi_python as rtmidi
 import time
 
-KEYPAD_PORT_NAME = "KEYPAD"     # Nombre del puerto MIDI de este programa
-SYNTH_PORT_NAME = "FLUID"       # Nombre del puerto MIDI del sintetizador
-USB_PORT_NAME = "f_midi"        # Nombre del puerto MIDI USB
+KEYPAD_PORT_NAME = "KEYPAD"
+SYNTH_PORT_NAME = "FLUID"
+USB_PORT_NAME = "f_midi"
 
-# Mensajes MIDI (se usa el canal 0 para todos los mensajes)
-NOTE_ON = 0x90      # Status byte para el inicio de una nota
-NOTE_OFF = 0x80     # Status byte para el fin de una nota
-CONTROL = 0xB0      # Status byte para mensajes de control
-VELOCITY = 128      # Velocity fija con que se mandan todas las notas
-CUSTOM = 0x09       # Controller number para el control de direreccion
+VELOCITY = 64
+NOTE_ON = 0x90
+NOTE_OFF = 0x80
+CONTROL = 0xB0
+CUSTOM = 0x09
 
-# Parametros de los teclados
-COLUMS = 6              # Columnas
-ROWS = 8                # Filas
-NUM_OF_READS = 2        # Numero de veces que se lee cada tecla
-DEBOUNCE_DELAY = 0.001  # Delay entre lecturas sucesivas
+COLUMS = 6
+ROWS = 8
+NUM_OF_READS = 2
+DEBOUNCE_DELAY = 0.001
 
-# Direccion del fuelle
-current_dir = 0         # 0 = Abriendo, 1 = Cerrando
-new_dir = 0             # Esta variable es global y la cambia la callback
+current_dir = 0 # 0 = Abriendo, 1 = Cerrando
+new_dir = 0
 
-# Mapeo de las notas
-# Mano derecha
 right_notes_matrix = [[[0, 0] for x in range(ROWS)] for y in range(COLUMS)]
+# Mano Derecha
+# 0 = Abriendo, 1 = Cerrando
 right_notes_matrix[0][0] = [81, 80]
 right_notes_matrix[0][1] = [85, 88]
 right_notes_matrix[0][2] = [79, 75]
@@ -66,8 +63,10 @@ right_notes_matrix[5][0] = [92, 92]
 right_notes_matrix[5][1] = [91, 90]
 right_notes_matrix[5][2] = [89, 89]
 right_notes_matrix[5][3] = [94, 93]
-# Mano izquierda
+
 left_notes_matrix = [[[0, 0] for x in range(ROWS)] for y in range(COLUMS)]
+# Mano Izquierda
+# 0 = Abriendo, 1 = Cerrando
 left_notes_matrix[0][0] = [ 54, 53]
 left_notes_matrix[0][1] = [ 39, 37]
 left_notes_matrix[0][2] = [ 36, 41]
@@ -102,21 +101,19 @@ left_notes_matrix[4][2] = [ 68, 67]
 left_notes_matrix[4][3] = [ 46, 46]
 left_notes_matrix[4][4] = [ 44, 44]
 
-# Estado inicial para los datos de entrada (ninguna tecla apretada)
 right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
-# Callbak que es llamada cuando se recube un mensaje MIDI
-# por el puerto KEYPAD_PORT_NAME (el que abre este progama)
 def callback(message, time_stamp):
-    # Se espera un mensaje MIDI con la estructura
-    # [CONTROL] [CUSTOM] [direccion (0x00 o 0x01)]
     global new_dir
+    #print message
     if message[0] == CONTROL and message[1] == CUSTOM:
         if message[2] == 0:
-            new_dir = 0     # Abriendo
+            #print "Abriendo"
+            new_dir = 0
         else:
-            new_dir = 1     # Cerrando
+            #print "Cerrando"
+            new_dir = 1
 
 try:
     midi_out = rtmidi.MidiOut(KEYPAD_PORT_NAME)
@@ -132,7 +129,7 @@ try:
 
     midi_usb_out = rtmidi.MidiOut()
     port_found = False
-    for port_name in midi_out.ports:
+    for port_name in midi_usb_out.ports:
         if USB_PORT_NAME in port_name:
             midi_usb_out.open_port(port_name)
             print "USB MIDI port found."
@@ -153,6 +150,7 @@ try:
     mcp1.setDirPORTB(0xC0)
     mcp1.setPullupPORTA(0xFF)
     mcp1.setPullupPORTB(0xC0)
+    
     # Derecha
     mcp0 = MCP23S17(ce=0)
     mcp0.open()
@@ -161,7 +159,7 @@ try:
     mcp0.setPullupPORTA(0xFF)
     mcp0.setPullupPORTB(0xC0)
 
-    while True:
+    while (True):
         left_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         right_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         for current_col in range(COLUMS):
@@ -205,6 +203,7 @@ try:
         right_prev_data = right_new_data
 
         if new_dir != current_dir:
+            #print "New dir!"
             current_dir = new_dir
             right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
             left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
