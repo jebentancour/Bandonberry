@@ -122,7 +122,7 @@ try:
         for port_name in midi_out.ports:
             if SYNTH_PORT_NAME in port_name:
                 midi_out.open_port(port_name)
-                print "Synth MIDI port found."
+                print "Puerto sintetizador encontrado"
                 port_found = True
                 for note in range(128):
                     midi_out.send_message([NOTE_OFF, note, VELOCITY])
@@ -132,16 +132,16 @@ try:
     for port_name in midi_usb_out.ports:
         if USB_PORT_NAME in port_name:
             midi_usb_out.open_port(port_name)
-            print "USB MIDI port found."
+            print "Puerto USB MIDI encontrado"
             port_found = True
     if not port_found:
-        print "USB MIDI port not found, exit."
+        print "Puerto USB MIDI no encontrado"
         sys.exit()
 
     midi_in = rtmidi.MidiIn()
     midi_in.callback = callback
     midi_in.open_port()
-    print "Keypad MIDI port opened."
+    print "Puerto KeyPad abierto"
 
     # Izquierda
     mcp1 = MCP23S17(ce=1)
@@ -150,7 +150,7 @@ try:
     mcp1.setDirPORTB(0xC0)
     mcp1.setPullupPORTA(0xFF)
     mcp1.setPullupPORTB(0xC0)
-    
+
     # Derecha
     mcp0 = MCP23S17(ce=0)
     mcp0.open()
@@ -203,7 +203,6 @@ try:
         right_prev_data = right_new_data
 
         if new_dir != current_dir:
-            #print "New dir!"
             current_dir = new_dir
             right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
             left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]

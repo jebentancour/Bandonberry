@@ -30,36 +30,55 @@ sensibilidad = 5
 ## TOPE
 tope = 127
 
+## MINIMO
+min = 30
+
+# Me conecto con el puerto MIDI del sintetizador
 midi_out1 = rtmidi.MidiOut()
-for port_name in midi_out1.ports:
-    if SYNTH_PORT_NAME in port_name:
-        midi_out1.open_port(port_name) # Me conecto con el puerto MIDI del sintetizador
-        print "Puerto sintetizador encontrado"
-        midi_out2 = rtmidi.MidiOut()
-        for port_name in midi_out2.ports:
-            if KEYPAD_PORT_NAME in port_name:
-                midi_out2.open_port(port_name) # Me conecto con el puerto MIDI del teclado
-                print "Puerto KeyPad encontrado"
-                presion= sensor.read_pressure()
-                if (presion-media)>0:
-                    estado= 1 ## Cerrando
-                else:
-                    estado= 0 ## Abriendo
-                while True:
-                    presion= sensor.read_pressure()
-                    if (presion - media)>0 and estado==0:
-                        print "Cerrando"
-                        estado=1
-                        midi_out2.send_message([CONTROL, CUSTOM, 0x01]) # Fuelle cerrando
-                    elif (presion -media)<0 and estado==1:
-                        print "Abriendo"
-                        estado=0
-                        midi_out2.send_message([CONTROL, CUSTOM, 0x00]) # Fuelle abriendo
-                    else:
-                        pass
-                    #print('Pressure = {0:0.2f} Pa'.format(((abs(presion-media))/8)))
-                    if (abs(presion-media)/sensibilidad) < 127:
-                        midi_out1.send_message([CONTROL, VOLUME, (abs(presion-media))/sensibilidad])
-                    else:
-                        midi_out1.send_message([CONTROL, VOLUME, tope])
-                    #time.sleep(0.002)
+port_found = False
+while not port_found:
+    for port_name in midi_out1.ports:
+        if SYNTH_PORT_NAME in port_name:
+            midi_out1.open_port(port_name)
+            print "Puerto sintetizador encontrado"
+            port_found = True
+
+# Me conecto con el puerto MIDI del teclado
+midi_out2 = rtmidi.MidiOut()
+port_found = False
+while not port_found:
+    for port_name in midi_out2.ports:
+        if KEYPAD_PORT_NAME in port_name:
+            midi_out2.open_port(port_name)
+            print "Puerto KeyPad encontrado"
+            port_found = True
+
+# Comienzan las lecturas del sensor
+presion = sensor.read_pressure()
+if (presion - media) > 0:
+    estado = 1 ## Cerrando
+else:
+    estado = 0 ## Abriendo
+while True:
+    presion = sensor.read_pressure()
+    #print('Presion = {0:0.2f} Pa'.format(presion))
+    if (presion - media) > 0 and estado == 0:
+        #print "Cerrando"
+        estado = 1
+        midi_out2.send_message([CONTROL, CUSTOM, 0x01]) # Fuelle cerrando
+    elif (presion -media) < 0 and estado == 1:
+        #print "Abriendo"
+        estado = 0
+        midi_out2.send_message([CONTROL, CUSTOM, 0x00]) # Fuelle abriendo
+    else:
+        pass
+    value = abs(presion-media)/sensibilidad
+    #print('Volume = {0:0.2f}'.format(((abs(presion-media))/sensibilidad)))
+    if value < min:
+        midi_out1.send_message([CONTROL, VOLUME, 0])
+    else:
+        if (value) < 127:
+            midi_out1.send_message([CONTROL, VOLUME, value])
+        else:
+            midi_out1.send_message([CONTROL, VOLUME, tope])
+    #time.sleep(0.2)
