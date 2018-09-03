@@ -33,6 +33,8 @@ Uso de pines:
 
 El mecanismo de apagado es el de [RaspiATX](https://github.com/LowPowerLab/ATX-Raspi).
 
+Un script que corre en la raspberry monitorea el estado de un pin para enviar una señal de apagado en el sistema cuando se detecta un cambio en su estado. Una señal es enviada por otro pin para indicar el correcto booteo del sistema. Solo utilizamos los scripts provistos e implementamos en el BMS la funcionalidad del manejo de la energía.
+
 Se copia el script de instalación: 
 ```
 sudo wget https://raw.githubusercontent.com/LowPowerLab/ATX-Raspi/master/shutdownchecksetup.sh
@@ -53,6 +55,8 @@ sudo reboot
 
 [Adafruit MAX98357 I2S Class-D Mono Amp](https://learn.adafruit.com/adafruit-max98357-i2s-class-d-mono-amp/overview)
 
+Dado que la raspberry no posee salida analógica de audio es necesario agregar hardware adicional para generar las señales de audio y amplificarlas. Optamos por dicho integrado dado que posee entrada digital I2S, presente en la raspberry, y provee una señal ya aplificada para ser conectada directamente a un parlante.
+
 Correr el comando dos veces:
 ```
 curl -sS https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2samp.sh | bash
@@ -62,6 +66,7 @@ Para ver una lista de los dispositivos de audio:
 ```
 aplay -l
 ```
+Los auriculares con conexión de 3.5 mm poseen un terminal en común, configuración que no es posible llevar a cabo con estos integrados. La etapa de aplificación de este integrado tiene una configuración complementaria o diferencial, lo cuál implica que no es posible utilizar dos amplificadores para alimentar un par de auriculares. Dado el gran impacto que tiene en el diseño el cambio de este integrado se optó por conservarlo y eliminar la salida de audio de 3.5 mm.
 
 ## Fluidsynth
 
