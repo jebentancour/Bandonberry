@@ -1,5 +1,7 @@
 # Bandonberry
 
+El proyecto Bandonberry tiene como objetivo crear un simulador electrónico para el aprendizaje del bandoneón. Pretende ser una alternativa económica en comparación con un bandoneón, de forma de permitir el acceso a un instrumento por parte de los estudiantes. No solo se limita a reproducir su forma y sonido, sino que incorpora tecnologías que ayudan y estimulan el proceso de aprendizaje.
+
 ## Raspberry Pi
 
 [HARDWARE DOCUMENTATION](https://www.raspberrypi.org/documentation/hardware/raspberrypi/README.md)
@@ -57,7 +59,7 @@ sudo reboot
 
 Dado que la raspberry no posee salida analógica de audio es necesario agregar hardware adicional para generar las señales de audio y amplificarlas. Optamos por dicho integrado dado que posee entrada digital I2S, presente en la raspberry, y provee una señal ya aplificada para ser conectada directamente a un parlante.
 
-Correr el comando dos veces:
+Para instalarlo correr el comando dos veces:
 ```
 curl -sS https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2samp.sh | bash
 ```
@@ -66,11 +68,14 @@ Para ver una lista de los dispositivos de audio:
 ```
 aplay -l
 ```
+
 Los auriculares con conexión de 3.5 mm poseen un terminal en común, configuración que no es posible llevar a cabo con estos integrados. La etapa de aplificación de este integrado tiene una configuración complementaria o diferencial, lo cuál implica que no es posible utilizar dos amplificadores para alimentar un par de auriculares. Dado el gran impacto que tiene en el diseño el cambio de este integrado se optó por conservarlo y eliminar la salida de audio de 3.5 mm.
 
 ## Fluidsynth
 
 [FLUIDSYNTH USER MANUAL](https://github.com/FluidSynth/fluidsynth/wiki/UserManual)
+
+Para generar el sonido de bandoneón utilizamos el sintetizador [Fluidsynth](http://www.fluidsynth.org/) en conjunto con una biblioteca de sonidos de uso libre creado por [Jörg Bleymehl](http://joergbleymehl.de/en/bandochords/soundfont/).
 
 Para instalarlo:
 ```
@@ -108,6 +113,8 @@ sudo pip install rtmidi-python
 ```
 
 ## GPIO expander
+
+Las botoneras poseen una gran cantidad de botones (71 en total) y es necesario detectar el accionar de distintos botones de manera simultánea. Dado que la raspberry posee solo 26 entradas digitales se utiliza  un módulo expansor de puertos.
 
 El chip [MCP23S17](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf) es SPI, se debe habilitar SPI desde ```sudo raspi-config``` como se explica en la [GUíA ADAFRUIT](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-spi).
 
