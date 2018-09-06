@@ -13,7 +13,7 @@ Uso de pines:
 |3.3 V        |3.3 V          |1       |2       |5 V         |5 V       | 
 |PRESION      |I2C1 SDA       |3       |4       |5 V         |5 V       | 
 |PRESION      |I2C1 SCL       |5       |6       |GND         |GND       | 
-|             |GPIO 04        |7       |8       |UART0 TX    |          | 
+|SERVO        |GPIO 04        |7       |8       |UART0 TX    |          | 
 |GND          |GND            |9       |10      |UART0 RX    |          | 
 |             |GPIO 17        |11      |12      |BITCLK      |AUDIO     |
 |             |GPIO 27        |13      |14      |GND         |GND       |
