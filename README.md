@@ -241,3 +241,55 @@ git clone https://github.com/adafruit/Adafruit_Python_BMP.git
 cd Adafruit_Python_BMP
 sudo python setup.py install
 ```
+
+## BMS
+
+### Arduino Pro Micro
+
+[HARDWARE DOCUMENTATION](https://wiki.eprolabs.com/index.php?title=Arduino_Pro_Micro)
+
+Uso de pines:
+
+|uso            |función        |pin     |pin     |función     |uso               |
+|---------------|---------------|--------|--------|------------|------------------|
+|               |TX/D0          |1       |2       |RAW         |                  | 
+|               |RX/D1          |3       |4       |GND         |                  | 
+|               |GND            |5       |6       |RESET       |                  | 
+|               |GND            |7       |8       |Vcc (5V)    |                  | 
+|SDA_Fuel_Guage |SDA/D2         |9       |10      |A3          |                  | 
+|SCL_Fuel_Guage |SCL/D3         |11      |12      |A2          |                  |
+|AlertLowBat_IN |A6/D4          |13      |14      |A1          |                  |
+|QuickStart_OUT |D5             |15      |16      |A0          |                  |
+|ShutDownBot_IN |A7/D6          |17      |18      |D15/SCLK    |                  |
+|RaspState_IN   |D7             |19      |20      |D14/MISO    |SelectBot_IN      |
+|PowerOnOff_OUT |A8/D8          |21      |22      |D16/MOSI    |RBatCheck_OUT     |
+|RaspOff_OUT    |A9/D9          |23      |24      |D10/A10     |SafeVoltageBat_Out|
+
+
+``ShutDownBot_IN`` = Señal que recibe del botón de encendido/apagado.
+
+``RaspState_IN`` = Señal de la raspberry que indica ``HIGH`` = No apagar, ``LOW`` = Se puede apagar.
+
+``PowerOnOff_OUT`` = Señal que enciende el transistor, permitiendo alimentar todo el sistema. ``HIGH`` = Encendido todo el sistema, ``LOW`` = Se corta la corriente de todo el sistema (a no ser que se apreiete el botón de encendido). 
+
+``RaspOff_OUT`` = Señal que indica a la raspberry que comience el proceso de preparación de apagado. (``HIGH`` 0.5 segundos es un reset, por más de 2 segundos es comienzo de proceso de apagado, y por más de 8 segundos es apagado forzado).
+
+``SafeVoltageBat_Out`` = Señal que habilita la alimentación de la raspberry una vez que se chequé el voltaje de la batería. (AÚN NO ESTA EN EL PLANO)
+
+La señal de ``Boot_IN`` se baja pero la luz de la raspberry se termina de apagar 8 segundos después, considerar ese delay en el código.
+
+![borrador_bms](borrador_bms.png)
+
+### Conexión con la Raspberry
+
+``SHUTDOWN_IN = 12``    conectado a        ``RaspOff_OUT = 8``
+
+``BOOT_OUT = 16``       conectado a        ``RaspState_IN = 6``        
+
+### Medidor de batería
+
+Utilizaremos un integrado [MAX17043](https://www.maximintegrated.com/en/products/power/battery-management/MAX17043.html) como medidor de la carga de la batería.
+
+Para poder usarlo en Arduino nos bajamos la librerías de aqui [Librerias del MAX 17043 Fuel gauge](https://github.com/awelters/LiPoFuelGauge).
+
+Sobre la programación y funciones de la librería [Funciones de libreria](http://www.lucadentella.it/max17043-libreria-per-arduino/).
