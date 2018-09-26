@@ -29,7 +29,7 @@ media = presion / 10
 print('Presion atm. = {0:0.2f} Pa'.format(media))
 
 ## Sensibilidad (menor más sensible)
-sensibilidad = 5
+sensibilidad = 1
 
 ## TOPE
 tope = 127
@@ -64,7 +64,7 @@ if (presion - media) > 0:
 else:
     estado = 0 ## Abriendo
 while True:
-    presion = sensor.read_pressure()
+    presion = (presion + sensor.read_pressure())/2
     #print('Presion = {0:0.2f} Pa'.format(presion))
     if (presion - media) > 0 and estado == 0:
         #print "Cerrando"
@@ -86,3 +86,4 @@ while True:
         else:
             midi_out1.send_message([CONTROL, VOLUME, tope])
     #time.sleep(0.2)
+    media = media * 0.999 + presion * 0.001
