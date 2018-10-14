@@ -1,8 +1,15 @@
 #!/usr/bin/python
 
 from BDN_MCP23S17 import MCP23S17
+import RPi.GPIO as GPIO
 import rtmidi_python as rtmidi
 import time
+
+PIN = 4
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(PIN, GPIO.OUT)
+servo = GPIO.PWM(PIN,50)
+servo.start(0)
 
 KEYPAD_PORT_NAME = "KEYPAD"
 SYNTH_PORT_NAME = "FLUID"
@@ -16,7 +23,7 @@ CUSTOM = 0x09
 
 COLUMS = 6
 ROWS = 8
-NUM_OF_READS = 2
+NUM_OF_READS = 3
 DEBOUNCE_DELAY = 0.001
 
 current_dir = 0 # 0 = Abriendo, 1 = Cerrando
@@ -103,6 +110,9 @@ left_notes_matrix[4][4] = [ 44, 44]
 
 right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+valve_prev_data = 0x40 # 0100 000
+notes_playing = 0
+valve_open = False
 
 def callback(message, time_stamp):
     global new_dir
@@ -162,6 +172,7 @@ try:
     while (True):
         left_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         right_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+        valve_new_data = 0x00
         for current_col in range(COLUMS):
             mcp1.writePORTB(~(0x01 << current_col))
             mcp0.writePORTB(~(0x01 << current_col))
@@ -178,11 +189,13 @@ try:
                             note = left_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_OFF, note, VELOCITY])
                             midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
+                            notes_playing -= 1
                             #print 'left_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = left_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_ON, note, VELOCITY])
                             midi_usb_out.send_message([NOTE_ON, note, VELOCITY])
+                            notes_playing += 1
                             #print 'left_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
             if right_prev_data[current_col] != right_new_data[current_col]:
                 for current_row in range(ROWS):
@@ -193,14 +206,35 @@ try:
                             note = right_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_OFF, note, VELOCITY])
                             midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
+                            notes_playing -= 1
                             #print 'right_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = right_notes_matrix[current_col][current_row][current_dir]
                             midi_out.send_message([NOTE_ON, note, VELOCITY])
                             midi_usb_out.send_message([NOTE_ON, note, VELOCITY])
+                            notes_playing += 1
                             #print 'right_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
+        valve_new_data = mcp0.readPORTB() & 0x40
+        if valve_prev_data != valve_new_data:
+            if valve_new_data == 0x00:
+                #print 'valve pressed'
+                valve_open = True
+            else:
+                #print 'valve released'
+                valve_open = False
+        if valve_open:
+            #print 'valve open'
+            servo.ChangeDutyCycle(10)
+        else:
+            if notes_playing > 0:
+                #print '{0} notes playing'.format(notes_playing)
+                servo.ChangeDutyCycle(8)
+            else:
+                #print 'no notes_playing'
+                servo.ChangeDutyCycle(5)
         left_prev_data = left_new_data
         right_prev_data = right_new_data
+        valve_prev_data = valve_new_data
 
         if new_dir != current_dir:
             current_dir = new_dir
@@ -216,3 +250,5 @@ finally:
     midi_in.close_port()
     midi_out.close_port()
     midi_usb_out.close_port()
+    servo.stop()
+    GPIO.cleanup()
