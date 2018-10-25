@@ -134,15 +134,19 @@ def set_servo_position(new_position):
 
     if new_position != position:
         if new_position == 0:
+            print 'servo 0'
             servo.ChangeDutyCycle(5)
         if new_position == 1:
+            print 'servo 1'
             servo.ChangeDutyCycle(8)
         if new_position == 2:
+            print 'servo 2'
             servo.ChangeDutyCycle(11)
         position = new_position
         position_timestamp = time.time()
 
     if time.time() > position_timestamp + 1:
+        #print 'servo stop'
         servo.ChangeDutyCycle(0)
 
 try:
@@ -260,6 +264,7 @@ try:
             current_dir = new_dir
             right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
             left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+            notes_playing = 0
             for note in range(128):
                 midi_out.send_message([NOTE_OFF, note, VELOCITY])
                 midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
