@@ -24,7 +24,7 @@ CUSTOM = 0x09
 COLUMS = 6
 ROWS = 8
 NUM_OF_READS = 3
-DEBOUNCE_DELAY = 0.001
+DEBOUNCE_DELAY = 0.0012
 
 current_dir = 0 # 0 = Abriendo, 1 = Cerrando
 new_dir = 0
@@ -125,6 +125,26 @@ def callback(message, time_stamp):
             #print "Cerrando"
             new_dir = 1
 
+position = -1
+position_timestamp = time.time()
+
+def set_servo_position(new_position):
+    global position
+    global position_timestamp
+
+    if new_position != position:
+        if new_position == 0:
+            servo.ChangeDutyCycle(5)
+        if new_position == 1:
+            servo.ChangeDutyCycle(8)
+        if new_position == 2:
+            servo.ChangeDutyCycle(11)
+        position = new_position
+        position_timestamp = time.time()
+
+    if time.time() > position_timestamp + 1:
+        servo.ChangeDutyCycle(0)
+
 try:
     midi_out = rtmidi.MidiOut(KEYPAD_PORT_NAME)
     port_found = False
@@ -224,14 +244,14 @@ try:
                 valve_open = False
         if valve_open:
             #print 'valve open'
-            servo.ChangeDutyCycle(10)
+            set_servo_position(2)
         else:
             if notes_playing > 0:
                 #print '{0} notes playing'.format(notes_playing)
-                servo.ChangeDutyCycle(8)
+                set_servo_position(1)
             else:
                 #print 'no notes_playing'
-                servo.ChangeDutyCycle(5)
+                set_servo_position(0)
         left_prev_data = left_new_data
         right_prev_data = right_new_data
         valve_prev_data = valve_new_data
