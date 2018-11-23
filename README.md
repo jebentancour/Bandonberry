@@ -71,6 +71,11 @@ aplay -l
 
 Los auriculares con conexión de 3.5 mm poseen un terminal en común, configuración que no es posible llevar a cabo con estos integrados. La etapa de aplificación de este integrado tiene una configuración complementaria o diferencial, lo cuál implica que no es posible utilizar dos amplificadores para alimentar un par de auriculares. Dado el gran impacto que tiene en el diseño el cambio de este integrado se optó por conservarlo y eliminar la salida de audio de 3.5 mm.
 
+Se puso una resistencia a Vcc en los pines SD para seleccionar el canal en cada aplificador:
+
+- Izquierdo 150k
+- Derecho 1M
+
 ## Fluidsynth
 
 [FLUIDSYNTH USER MANUAL](https://github.com/FluidSynth/fluidsynth/wiki/UserManual)
