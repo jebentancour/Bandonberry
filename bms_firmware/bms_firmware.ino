@@ -331,6 +331,12 @@ void setup(){
         
         CheckBat(); // Chequeo estado de la bateria antes de energizar Raspberry
     }
+
+    // Mute
+    pinMode(A0, OUTPUT);
+    pinMode(A1, OUTPUT);
+    digitalWrite(A0, LOW);
+    digitalWrite(A1, LOW);
     
     digitalWrite(ROn_OUT, HIGH); //Enciendo Raspberry
     
@@ -357,7 +363,12 @@ void loop() {
         }
         
         RState = digitalRead(RaspState_IN); // chquea si la señal de pronto para apagar esta ok. Si esta OK, el Rstate is LOW
-    }  
+    }
+
+    delay(2000);
+    // Un-mute
+    pinMode(A0, INPUT);
+    pinMode(A1, INPUT);
 
     //////////////////////////////// ESTADO DE REPOSO ////////////////////////////////////////////////////////////
     
@@ -379,6 +390,12 @@ void loop() {
     }
     
     ////////////////////////////////// APAGADO /////////////////////////////////////////////////////////////////////
+
+    // Mute
+    pinMode(A0, OUTPUT);
+    pinMode(A1, OUTPUT);
+    digitalWrite(A0, LOW);
+    digitalWrite(A1, LOW);
      
     StartTime = millis();                     // Mido cuanto tiempo en el que se apreto el boton
     ResultTime = millis() - StartTime;
