@@ -15,8 +15,8 @@ Uso de pines:
 |PRESION      |I2C1 SCL       |5       |6       |GND         |GND       | 
 |SERVO        |GPIO 04        |7       |8       |UART0 TX    |          | 
 |GND          |GND            |9       |10      |UART0 RX    |          | 
-|             |GPIO 17        |11      |12      |BITCLK      |AUDIO     |
-|             |GPIO 27        |13      |14      |GND         |GND       |
+|BMS          |GPIO 17        |11      |12      |BITCLK      |AUDIO     |
+|BOTON        |GPIO 27        |13      |14      |GND         |GND       |
 |             |GPIO 22        |15      |16      |GPIO 23     |LED       |
 |3.3 V        |3.3 V          |17      |18      |GPIO 24     |          |
 |TECLADO      |SPI0 MOSI      |19      |20      |GND         |GND       |
