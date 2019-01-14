@@ -23,8 +23,8 @@ midi_out = rtmidi.MidiOut()
 for port_name in midi_out.ports:
     if MIDI_PORT_NAME in port_name:
         midi_out.open_port(port_name)
-        #GPIO.output(PIN, GPIO.HIGH)
-        #GPIO.output(PIN, GPIO.LOW)
+        GPIO.output(PIN, GPIO.HIGH)
+        GPIO.output(PIN, GPIO.LOW)
         GPIO.output(PIN, GPIO.HIGH)
         midi_out.send_message([NOTE_ON, NOTE, VELOCITY])
         GPIO.output(PIN, GPIO.LOW)
