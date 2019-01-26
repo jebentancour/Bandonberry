@@ -185,17 +185,6 @@ from BDN_MCP23S17 import MCP23S17
 |SPI0 MOSI |SI      |13      |16      |A1      |GND       |
 |SPI0 MISO |SO      |14      |15      |A0      |GND       |
 
-## PCB
-
-Restricciones de JLCPCB:
-
-|item               |mil   |mm    |
-|-------------------|------|------|
-|Min. Trace         | 5.000|0.127 |
-|Min. Spacing       | 5.000|0.127 |
-|Min. Via hole size |11.811|0.300 |
-|Min. Via diameter  |23.622|0.600 |
-
 ## MIDI USB
 
 [MIDI TUTORIAL](http://www.music-software-development.com/midi-tutorial.html)
