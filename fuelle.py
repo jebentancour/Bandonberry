@@ -65,19 +65,19 @@ else:
     estado = 0 ## Abriendo
 while True:
     presion = (presion + sensor.read_pressure())/2
-    #print('Presion = {0:0.2f} Pa'.format(presion))
+    print('Presion = {0:0.2f} Pa'.format(presion))
     if (presion - media) > 0 and estado == 0:
-        #print "Cerrando"
+        print "Cerrando"
         estado = 1
         midi_out2.send_message([CONTROL, CUSTOM, 0x01]) # Fuelle cerrando
     elif (presion -media) < 0 and estado == 1:
-        #print "Abriendo"
+        print "Abriendo"
         estado = 0
         midi_out2.send_message([CONTROL, CUSTOM, 0x00]) # Fuelle abriendo
     else:
         pass
     value = abs(presion-media)/sensibilidad
-    #print('Volume = {0:0.2f}'.format(((abs(presion-media))/sensibilidad)))
+    print('Volume = {0:0.2f}'.format(((abs(presion-media))/sensibilidad)))
     if value < min:
         midi_out1.send_message([CONTROL, VOLUME, 0])
     else:

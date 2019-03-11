@@ -238,7 +238,9 @@ try:
                             midi_usb_out.send_message([NOTE_ON, note, VELOCITY])
                             notes_playing += 1
                             #print 'right_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
+
         valve_new_data = mcp0.readPORTB() & 0x40
+
         if valve_prev_data != valve_new_data:
             if valve_new_data == 0x00:
                 #print 'valve pressed'
@@ -256,6 +258,7 @@ try:
             else:
                 #print 'no notes_playing'
                 set_servo_position(0)
+
         left_prev_data = left_new_data
         right_prev_data = right_new_data
         valve_prev_data = valve_new_data
