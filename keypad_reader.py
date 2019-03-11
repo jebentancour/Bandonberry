@@ -164,9 +164,9 @@ try:
         sys.exit()
 
     # Configuracion de canales MIDI
-    midi_out.send_message([CONTROL | 0x00, VOLUME, 0xFF]) # Mano derecha abriendo
+    midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo
     midi_out.send_message([CONTROL | 0x01, VOLUME, 0x00]) # Mano derecha cerrando
-    midi_out.send_message([CONTROL | 0x02, VOLUME, 0xFF]) # Mano izquierda abriendo
+    midi_out.send_message([CONTROL | 0x02, VOLUME, 0x00]) # Mano izquierda abriendo
     midi_out.send_message([CONTROL | 0x03, VOLUME, 0x00]) # Mano izquierda cerrando
 
     midi_out.send_message([CONTROL | 0x00, BALANCE, RIGHT])
