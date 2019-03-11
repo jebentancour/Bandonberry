@@ -18,16 +18,19 @@ USB_PORT_NAME = "f_midi"
 VELOCITY = 64
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
+
 CONTROL = 0xB0
-CUSTOM = 0x09
+VOLUME = 0x07
+BALANCE = 0x0A
+
+LEFT = 0x00
+RIGHT = 0x7F
+CENTER = 0x40
 
 COLUMS = 6
 ROWS = 8
 NUM_OF_READS = 3
 DEBOUNCE_DELAY = 0.0012
-
-current_dir = 0 # 0 = Abriendo, 1 = Cerrando
-new_dir = 0
 
 right_notes_matrix = [[[0, 0] for x in range(ROWS)] for y in range(COLUMS)]
 # Mano Derecha
@@ -110,20 +113,8 @@ left_notes_matrix[4][4] = [ 44, 44]
 
 right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
-valve_prev_data = 0x40 # 0100 000
-notes_playing = 0
-valve_open = False
 
-def callback(message, time_stamp):
-    global new_dir
-    #print message
-    if message[0] == CONTROL and message[1] == CUSTOM:
-        if message[2] == 0:
-            #print "Abriendo"
-            new_dir = 0
-        else:
-            #print "Cerrando"
-            new_dir = 1
+notes_playing = 0
 
 position = -1
 position_timestamp = time.time()
@@ -134,13 +125,13 @@ def set_servo_position(new_position):
 
     if new_position != position:
         if new_position == 0:
-            print 'servo 0'
+            # print 'servo 0'
             servo.ChangeDutyCycle(5)
         if new_position == 1:
-            print 'servo 1'
+            # print 'servo 1'
             servo.ChangeDutyCycle(8)
         if new_position == 2:
-            print 'servo 2'
+            # print 'servo 2'
             servo.ChangeDutyCycle(11)
         position = new_position
         position_timestamp = time.time()
@@ -172,10 +163,16 @@ try:
         print "Puerto USB MIDI no encontrado"
         sys.exit()
 
-    midi_in = rtmidi.MidiIn()
-    midi_in.callback = callback
-    midi_in.open_port()
-    print "Puerto KeyPad abierto"
+    # Configuracion de canales MIDI
+    midi_out.send_message([CONTROL | 0x00, VOLUME, 0xFF]) # Mano derecha abriendo
+    midi_out.send_message([CONTROL | 0x01, VOLUME, 0x00]) # Mano derecha cerrando
+    midi_out.send_message([CONTROL | 0x02, VOLUME, 0xFF]) # Mano izquierda abriendo
+    midi_out.send_message([CONTROL | 0x03, VOLUME, 0x00]) # Mano izquierda cerrando
+
+    midi_out.send_message([CONTROL | 0x00, BALANCE, RIGHT])
+    midi_out.send_message([CONTROL | 0x01, BALANCE, RIGHT])
+    midi_out.send_message([CONTROL | 0x02, BALANCE, LEFT])
+    midi_out.send_message([CONTROL | 0x03, BALANCE, LEFT])
 
     # Izquierda
     mcp1 = MCP23S17(ce=1)
@@ -210,15 +207,19 @@ try:
                     prev_bit = (left_prev_data[current_col] >> current_row) & 0x01
                     if new_bit != prev_bit:
                         if new_bit:
-                            note = left_notes_matrix[current_col][current_row][current_dir]
-                            midi_out.send_message([NOTE_OFF, note, VELOCITY])
-                            midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
+                            note = left_notes_matrix[current_col][current_row]
+                            midi_out.send_message([NOTE_OFF | 0x02, note[0], VELOCITY])
+                            midi_out.send_message([NOTE_OFF | 0x03, note[1], VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF | 0x02, note[0], VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF | 0x03, note[1], VELOCITY])
                             notes_playing -= 1
                             #print 'left_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
-                            note = left_notes_matrix[current_col][current_row][current_dir]
-                            midi_out.send_message([NOTE_ON, note, VELOCITY])
-                            midi_usb_out.send_message([NOTE_ON, note, VELOCITY])
+                            note = left_notes_matrix[current_col][current_row]
+                            midi_out.send_message([NOTE_ON | 0x02, note[0], VELOCITY])
+                            midi_out.send_message([NOTE_ON | 0x03, note[1], VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON | 0x02, note[0], VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON | 0x03, note[1], VELOCITY])
                             notes_playing += 1
                             #print 'left_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
             if right_prev_data[current_col] != right_new_data[current_col]:
@@ -227,50 +228,31 @@ try:
                     prev_bit = (right_prev_data[current_col] >> current_row) & 0x01
                     if new_bit != prev_bit:
                         if new_bit:
-                            note = right_notes_matrix[current_col][current_row][current_dir]
-                            midi_out.send_message([NOTE_OFF, note, VELOCITY])
-                            midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
+                            note = right_notes_matrix[current_col][current_row]
+                            midi_out.send_message([NOTE_OFF | 0x00, note[0], VELOCITY])
+                            midi_out.send_message([NOTE_OFF | 0x01, note[1], VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF | 0x00, note[0], VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF | 0x01, note[1], VELOCITY])
                             notes_playing -= 1
                             #print 'right_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
-                            note = right_notes_matrix[current_col][current_row][current_dir]
-                            midi_out.send_message([NOTE_ON, note, VELOCITY])
-                            midi_usb_out.send_message([NOTE_ON, note, VELOCITY])
+                            note = right_notes_matrix[current_col][current_row]
+                            midi_out.send_message([NOTE_ON | 0x00, note[0], VELOCITY])
+                            midi_out.send_message([NOTE_ON | 0x01, note[1], VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON | 0x00, note[0], VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON | 0x01, note[1], VELOCITY])
                             notes_playing += 1
                             #print 'right_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
 
-        valve_new_data = mcp0.readPORTB() & 0x40
-
-        if valve_prev_data != valve_new_data:
-            if valve_new_data == 0x00:
-                #print 'valve pressed'
-                valve_open = True
-            else:
-                #print 'valve released'
-                valve_open = False
-        if valve_open:
-            #print 'valve open'
-            set_servo_position(2)
+        if notes_playing > 0:
+            #print '{0} notes playing'.format(notes_playing)
+            set_servo_position(1)
         else:
-            if notes_playing > 0:
-                #print '{0} notes playing'.format(notes_playing)
-                set_servo_position(1)
-            else:
-                #print 'no notes_playing'
-                set_servo_position(0)
+            #print 'no notes_playing'
+            set_servo_position(0)
 
         left_prev_data = left_new_data
         right_prev_data = right_new_data
-        valve_prev_data = valve_new_data
-
-        if new_dir != current_dir:
-            current_dir = new_dir
-            right_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
-            left_prev_data = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
-            notes_playing = 0
-            for note in range(128):
-                midi_out.send_message([NOTE_OFF, note, VELOCITY])
-                midi_usb_out.send_message([NOTE_OFF, note, VELOCITY])
 
 finally:
     mcp1.close()
