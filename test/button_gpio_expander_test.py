@@ -43,12 +43,12 @@ try:
         new_btn = mcp1.digitalRead(0)
         if new_btn != old_btn:
             if new_btn == 0:
-                #print "Button pressed!"
+                print "Button pressed!"
                 GPIO.output(PIN, GPIO.HIGH)
                 midi_out.send_message([NOTE_ON, NOTE, VELOCITY])
                 GPIO.output(PIN, GPIO.LOW)
             else:
-                #print "Button released!"
+                print "Button released!"
                 midi_out.send_message([NOTE_OFF, NOTE, VELOCITY])
 
         old_btn = new_btn
