@@ -24,9 +24,9 @@ for port_name in midi_out.ports:
     if MIDI_PORT_NAME in port_name:
         midi_out.open_port(port_name)
         
-        midi_out.send_message([CONTROL | 0x00, VOLUME, 0xFF])
-        midi_out.send_message([CONTROL | 0x01, VOLUME, 0xFF])
-        midi_out.send_message([CONTROL | 0x02, VOLUME, 0xFF])
+        midi_out.send_message([CONTROL | 0x00, VOLUME, 127])
+        midi_out.send_message([CONTROL | 0x01, VOLUME, 127])
+        midi_out.send_message([CONTROL | 0x02, VOLUME, 127])
 
         midi_out.send_message([CONTROL | 0x00, BALANCE, CENTER])
         midi_out.send_message([CONTROL | 0x01, BALANCE, LEFT])
