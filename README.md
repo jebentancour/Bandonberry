@@ -6,17 +6,23 @@ El proyecto Bandonberry tiene como objetivo crear un simulador electrónico para
 
 ## PCBs
 
-Botonera derecha
+Los archivos necesarios para fabricar las PCBs se encuentran en la carpeta /pcbs.
 
-Botonera izquierda
+1 - Botonera derecha
 
-Motherboard
+1 - Botonera izquierda
+
+1 - Motherboard
 
 ## Carcasa
 
 Lista de archivos STL
 
 # Software
+
+Se debe grabar en la SD de la Raspberry la imágen del siguiente link.
+
+El software del Arduino se encuentra en la carpeta /supervisor_firmware.
 
 En las secciones siguientes se encuentran las instrucciones para instalar los diferentes componentes del Bandonberry si se desea hacerlo manualmente en una instalación del sistema operativo en blanco.
 
