@@ -18,8 +18,6 @@ Lista de archivos STL
 
 # Software
 
-Sepuede bajar una imágen de la SD lista para grabar en el link
-
 En las secciones siguientes se encuentran las instrucciones para instalar los diferentes componentes del Bandonberry si se desea hacerlo manualmente en una instalación del sistema operativo en blanco.
 
 ## Raspberry Pi
