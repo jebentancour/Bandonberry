@@ -2,6 +2,26 @@
 
 El proyecto Bandonberry tiene como objetivo crear un simulador electrónico para el aprendizaje del bandoneón. Pretende ser una alternativa económica en comparación con un bandoneón, de forma de permitir el acceso a un instrumento por parte de los estudiantes. No solo se limita a reproducir su forma y sonido, sino que incorpora tecnologías que ayudan y estimulan el proceso de aprendizaje.
 
+# Hardware
+
+## PCBs
+
+Botonera derecha
+
+Botonera izquierda
+
+Motherboard
+
+## Carcasa
+
+Lista de archivos STL
+
+# Software
+
+Sepuede bajar una imágen de la SD lista para grabar en el link
+
+En las secciones siguientes se encuentran las instrucciones para instalar los diferentes componentes del Bandonberry si se desea hacerlo manualmente en una instalación del sistema operativo en blanco.
+
 ## Raspberry Pi
 
 [HARDWARE DOCUMENTATION](https://www.raspberrypi.org/documentation/hardware/raspberrypi/README.md)
@@ -268,11 +288,11 @@ Uso de pines:
 
 ``RaspOff_OUT`` = Señal que indica a la raspberry que comience el proceso de preparación de apagado. (``HIGH`` 0.5 segundos es un reset, por más de 2 segundos es comienzo de proceso de apagado, y por más de 8 segundos es apagado forzado).
 
-``SafeVoltageBat_Out`` = Señal que habilita la alimentación de la raspberry una vez que se chequé el voltaje de la batería. (AÚN NO ESTA EN EL PLANO)
+``SafeVoltageBat_Out`` = Señal que habilita la alimentación de la raspberry una vez que se chequé el voltaje de la batería.
 
-La señal de ``Boot_IN`` se baja pero la luz de la raspberry se termina de apagar 8 segundos después, considerar ese delay en el código.
+La señal de ``Boot_IN`` se baja pero la luz de la raspberry se termina de apagar 8 segundos después.
 
-![borrador_bms](borrador_bms.png)
+![esquema_bms](esquema_bms.png)
 
 ### Conexión con la Raspberry
 
