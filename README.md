@@ -24,7 +24,7 @@ En las secciones siguientes se encuentran las instrucciones para instalar los di
 
 Para comunicarse por SSH es necesario en primer lugar habilitarlo en la Raspberry Pi, ya que viene deshabilitado por defecto por motivos de seguridad, y en segundo lugar debe estar conectada a una red. Dado que no posee puerto Ethernet sino que WiFi, es necesario además pasarle las credenciales de la red a la que se desea que se conecte.
 
-En primer lugar la imagen del sistema operativo se descarga en una PC y es grabada en una tarjeta SD. Luego se reinserta la memoria SD en la PC y en la partición ``/boot`` se debe crear un archivo llamado ``ssh`` (sin extensión) para habilitar la conxión SSH y un archivo ``wpa\_supplicant.conf`` con la información de la red WiFi, como se muestra a continuación:
+En primer lugar la imagen del sistema operativo se descarga en una PC y es grabada en una tarjeta SD. Luego se reinserta la memoria SD en la PC y en la partición ``/boot`` se debe crear un archivo llamado ``ssh`` (sin extensión) para habilitar la conxión SSH y un archivo ``wpa_supplicant.conf`` con la información de la red WiFi, como se muestra a continuación:
 
 ```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
