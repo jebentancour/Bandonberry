@@ -20,13 +20,38 @@ Lista de archivos STL
 
 # Software
 
-Se debe grabar en la SD de la Raspberry la imágen del siguiente link.
+Se debe grabar en la SD de la Raspberry la imágen del siguiente link. Se dejó el usuario ``pi`` y contraseña ``raspberry`` por defecto.
 
 El software del Arduino se encuentra en la carpeta /supervisor_firmware.
 
 En las secciones siguientes se encuentran las instrucciones para instalar los diferentes componentes del Bandonberry si se desea hacerlo manualmente en una instalación del sistema operativo en blanco.
 
 ## Raspberry Pi
+
+Para comunicarse por SSH es necesario en primer lugar habilitarlo en la Raspberry Pi, ya que viene deshabilitado por defecto por motivos de seguridad, y en segundo lugar debe estar conectada a una red. Dado que no posee puerto Ethernet sino que WiFi, es necesario además pasarle las credenciales de la red a la que se desea que se conecte.
+
+En primer lugar la imagen del sistema operativo se descarga en una PC y es grabada en una tarjeta SD. Luego se reinserta la memoria SD en la PC y en la partición ``/boot`` se debe crear un archivo llamado ``ssh`` (sin extensión) para habilitar la conxión SSH y un archivo ``wpa\_supplicant.conf`` con la información de la red WiFi, como se muestra a continuación:
+
+```
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=UY
+
+network={
+     ssid="SSID"
+     psk="PASSWORD"
+     key_mgmt=WPA-PSK
+}    
+```
+
+Para que los programas necesarios sean inicados en automáticamente se agregaron los comandos de inicialización a ``/etc/rc.local``.
+
+```
+python /etc/shutdownirq.py &
+sudo fluidsynth -i -s -a alsa -o audio.alsa.device=hw:1,0 -g 3 -c 2 -z 64 /home/pi/Bandonberry/bandoneon_v2.sf2 &
+python /home/pi/Bandonberry/botoneras.py &
+python /home/pi/Bandonberry/fuelle.py &
+```
 
 [HARDWARE DOCUMENTATION](https://www.raspberrypi.org/documentation/hardware/raspberrypi/README.md)
 
@@ -306,7 +331,7 @@ La señal de ``Boot_IN`` se baja pero la luz de la raspberry se termina de apaga
 
 ### Medidor de batería
 
-Utilizaremos un integrado [MAX17043](https://www.maximintegrated.com/en/products/power/battery-management/MAX17043.html) como medidor de la carga de la batería.
+Utilizamos un integrado [MAX17043](https://www.maximintegrated.com/en/products/power/battery-management/MAX17043.html) como medidor de la carga de la batería.
 
 Para poder usarlo en Arduino nos bajamos la librerías de aqui [Librerias del MAX 17043 Fuel gauge](https://github.com/awelters/LiPoFuelGauge).
 
