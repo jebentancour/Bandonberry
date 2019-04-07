@@ -8,15 +8,9 @@ El proyecto Bandonberry tiene como objetivo crear un simulador electrónico para
 
 Los archivos necesarios para fabricar las PCBs se encuentran en la carpeta /pcbs.
 
-1 - Botonera derecha
-
-1 - Botonera izquierda
-
-1 - Motherboard
-
 ## Carcasa
 
-Lista de archivos STL
+Los archivos necesarios para fabricar la carcasa en impresora 3D se encuentran en la carpeta /stl.
 
 # Software
 
