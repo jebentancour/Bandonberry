@@ -30,7 +30,7 @@ CENTER = 0x40
 COLUMS = 6
 ROWS = 8
 NUM_OF_READS = 3
-DEBOUNCE_DELAY = 0.0012
+DEBOUNCE_DELAY = 0.0015
 
 right_notes_matrix = [[[0, 0] for x in range(ROWS)] for y in range(COLUMS)]
 # Mano Derecha
@@ -125,14 +125,11 @@ def set_servo_position(new_position):
 
     if new_position != position:
         if new_position == 0:
-            # print 'servo 0'
+            # print 'servo close'
             servo.ChangeDutyCycle(5)
         if new_position == 1:
-            # print 'servo 1'
+            # print 'servo open'
             servo.ChangeDutyCycle(8)
-        if new_position == 2:
-            # print 'servo 2'
-            servo.ChangeDutyCycle(11)
         position = new_position
         position_timestamp = time.time()
 
