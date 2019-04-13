@@ -14,7 +14,7 @@ servo.start(0)
 SYNTH_PORT_NAME = "FLUID"
 USB_PORT_NAME = "f_midi"
 
-VELOCITY = 127
+VELOCITY = 64
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
 
