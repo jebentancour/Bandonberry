@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 ## Importo librerias
 import Adafruit_BMP.BMP085 as BMP085
@@ -26,15 +25,6 @@ for i in range(10):
 media = presion / 10
 print('Presion atm. = {0:0.2f} Pa'.format(media))
 
-## Sensibilidad (menor más sensible)
-sensibilidad = 1
-
-## TOPE
-tope = 127
-
-## MINIMO
-min = 0
-
 # Me conecto con el puerto MIDI del sintetizador
 midi_out = rtmidi.MidiOut()
 port_found = False
@@ -45,40 +35,31 @@ while not port_found:
             print "Puerto sintetizador encontrado"
             port_found = True
 
-# Comienzan las lecturas del sensor
-presion = sensor.read_pressure()
-if (presion - media) > 0:
-    estado = 1 ## Cerrando
-else:
-    estado = 0 ## Abriendo
-
 while True:
     # Mido
-    presion = (presion + sensor.read_pressure())/2
+    presion = sensor.read_pressure()
     # print('Presion = {0:0.2f} Pa'.format(presion))
 
     # Calculo
-    value = abs(presion-media)/sensibilidad
-    # print('Volume = {0:0.2f}'.format(((abs(presion-media))/sensibilidad)))
+    value = abs(presion - media)
+    # print('Volume = {0:0.2f}'.format(value))
 
     # Checkeo extremos
-    if value < min:
-        value = 0;
-    if value > tope:
-        value = tope;
+    if value > 127:
+        value = 127;
 
     if (presion - media) > 0:
         # Cerrando
-        midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo
+        midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00])  # Mano derecha abriendo
         midi_out.send_message([CONTROL | 0x01, VOLUME, value]) # Mano derecha cerrando
-        midi_out.send_message([CONTROL | 0x02, VOLUME, 0x00]) # Mano izquierda abriendo
+        midi_out.send_message([CONTROL | 0x02, VOLUME, 0x00])  # Mano izquierda abriendo
         midi_out.send_message([CONTROL | 0x03, VOLUME, value]) # Mano izquierda cerrando
     elif (presion - media) < 0:
         # Abriendo
         midi_out.send_message([CONTROL | 0x00, VOLUME, value]) # Mano derecha abriendo
-        midi_out.send_message([CONTROL | 0x01, VOLUME, 0x00]) # Mano derecha cerrando
+        midi_out.send_message([CONTROL | 0x01, VOLUME, 0x00])  # Mano derecha cerrando
         midi_out.send_message([CONTROL | 0x02, VOLUME, value]) # Mano izquierda abriendo
-        midi_out.send_message([CONTROL | 0x03, VOLUME, 0x00]) # Mano izquierda cerrando
+        midi_out.send_message([CONTROL | 0x03, VOLUME, 0x00])  # Mano izquierda cerrando
     else:
         midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo
         midi_out.send_message([CONTROL | 0x01, VOLUME, 0x00]) # Mano derecha cerrando
