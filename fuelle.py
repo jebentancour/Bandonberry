@@ -5,7 +5,7 @@ import Adafruit_BMP.BMP085 as BMP085
 import rtmidi_python as rtmidi
 import time
 
-## Varias opciones de muestreo
+## Oppciones de muestreo
 sensor = BMP085.BMP085(mode=BMP085.BMP085_STANDARD)
 ## sensor = BMP085.BMP085(mode=BMP085.BMP085_ULTRALOWPOWER)
 ## sensor = BMP085.BMP085(mode=BMP085.BMP085_HIGHRES)
@@ -17,15 +17,18 @@ VOLUME = 0x07
 
 ## Puertos MIDI
 SYNTH_PORT_NAME = "FLUID"
+USB_PORT_NAME = "f_midi"
 
-## Presión atmosférica
+## Presion atmosferica
 presion = 0
 for i in range(10):
     presion += sensor.read_pressure()
 media = presion / 10
 print('Presion atm. = {0:0.2f} Pa'.format(media))
 
-# Me conecto con el puerto MIDI del sintetizador
+max_value = 0;
+
+# Me conecto con el puerto MIDI del sintetizador y USB
 midi_out = rtmidi.MidiOut()
 port_found = False
 while not port_found:
@@ -35,6 +38,15 @@ while not port_found:
             print "Puerto sintetizador encontrado"
             port_found = True
 
+midi_usb_out = rtmidi.MidiOut()
+port_found = False
+while not port_found:
+    for port_name in midi_usb_out.ports:
+        if USB_PORT_NAME in port_name:
+            midi_usb_out.open_port(port_name)
+            print "Puerto USB MIDI encontrado"
+            port_found = True
+
 while True:
     # Mido
     presion = sensor.read_pressure()
@@ -42,7 +54,12 @@ while True:
 
     # Calculo
     value = abs(presion - media)
+    value = (value * 127) / 400
     # print('Volume = {0:0.2f}'.format(value))
+
+    if value > max_value:
+        max_value = value
+        print('Max volume = {0:0.2f}'.format(max_value))
 
     # Checkeo extremos
     if value > 127:

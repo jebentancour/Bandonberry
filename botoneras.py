@@ -11,11 +11,10 @@ GPIO.setup(PIN, GPIO.OUT)
 servo = GPIO.PWM(PIN,50)
 servo.start(0)
 
-KEYPAD_PORT_NAME = "KEYPAD"
 SYNTH_PORT_NAME = "FLUID"
 USB_PORT_NAME = "f_midi"
 
-VELOCITY = 64
+VELOCITY = 127
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
 
@@ -138,7 +137,7 @@ def set_servo_position(new_position):
         servo.ChangeDutyCycle(0)
 
 try:
-    midi_out = rtmidi.MidiOut(KEYPAD_PORT_NAME)
+    midi_out = rtmidi.MidiOut()
     port_found = False
     while not port_found:
         for port_name in midi_out.ports:
@@ -151,14 +150,12 @@ try:
 
     midi_usb_out = rtmidi.MidiOut()
     port_found = False
-    for port_name in midi_usb_out.ports:
-        if USB_PORT_NAME in port_name:
-            midi_usb_out.open_port(port_name)
-            print "Puerto USB MIDI encontrado"
-            port_found = True
-    if not port_found:
-        print "Puerto USB MIDI no encontrado"
-        sys.exit()
+    while not port_found:
+        for port_name in midi_usb_out.ports:
+            if USB_PORT_NAME in port_name:
+                midi_usb_out.open_port(port_name)
+                print "Puerto USB MIDI encontrado"
+                port_found = True
 
     # Configuracion de canales MIDI
     midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo
@@ -171,7 +168,7 @@ try:
     midi_out.send_message([CONTROL | 0x02, BALANCE, LEFT])
     midi_out.send_message([CONTROL | 0x03, BALANCE, LEFT])
 
-    # Izquierda
+    # MCP23S17 izquierdo
     mcp1 = MCP23S17(ce=1)
     mcp1.open()
     mcp1.setDirPORTA(0xFF)
@@ -179,7 +176,7 @@ try:
     mcp1.setPullupPORTA(0xFF)
     mcp1.setPullupPORTB(0xC0)
 
-    # Derecha
+    # MCP23S17 derecho
     mcp0 = MCP23S17(ce=0)
     mcp0.open()
     mcp0.setDirPORTA(0xFF)
@@ -254,7 +251,6 @@ try:
 finally:
     mcp1.close()
     mcp0.close()
-    midi_in.close_port()
     midi_out.close_port()
     midi_usb_out.close_port()
     servo.stop()
