@@ -26,7 +26,7 @@ for i in range(10):
 media = presion / 10
 print('Presion atm. = {0:0.2f} Pa'.format(media))
 
-max_value = 0;
+# max_value = 0;
 
 # Me conecto con el puerto MIDI del sintetizador y USB
 midi_out = rtmidi.MidiOut()
@@ -57,13 +57,13 @@ while True:
     value = (value * 127) / 400
     # print('Volume = {0:0.2f}'.format(value))
 
-    if value > max_value:
-        max_value = value
-        print('Max volume = {0:0.2f}'.format(max_value))
+    # if value > max_value:
+        # max_value = value
+        # print('Max volume = {0:0.2f}'.format(max_value))
 
     # Checkeo extremos
     if value > 127:
-        value = 127;
+        value = 127
 
     if (presion - media) > 0:
         # Cerrando
