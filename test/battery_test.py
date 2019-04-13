@@ -24,13 +24,13 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIN, GPIO.OUT)
 
 servo = GPIO.PWM(PIN,50)
-servo.start(7.5)                                   # generate PWM signal with 7.5% duty cycle
+servo.start(0)
 
 midi_out.send_message([NOTE_ON, NOTE1, VELOCITY])  # Toco notas
 midi_out.send_message([NOTE_ON, NOTE2, VELOCITY])
 
 # Muevo el motor en un loop infinito
-while True:                                           # execute loop forever
+while True:
         servo.ChangeDutyCycle(8)                      # Servo abierto
         time.sleep(0.5)                                   
         servo.ChangeDutyCycle(0)                      # Servo quieto
