@@ -7,14 +7,15 @@ Lista de errores
 5) Error5: No se puede realizar el apagado, puede ser que el uruario no suelta el boton de encendido
 */
 
-// Display includes
 #include <SPI.h>
 #include <Wire.h>
+
+// Display includes
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
 // Fuel Gauge includes
-#include "MAX17043.h"
+#include <MAX17043.h>
 
 // Display functtions and constants
 #define OLED_RESET 4
@@ -25,30 +26,31 @@ MAX17043 batteryMonitor;
 
 // Boton set pin numbers
 const int ShutDownBot_IN  = 6;        // Señal que recibe del botón de encendido/apagado
-const int RaspState_IN    = 7;        // Señal de la raspberry que indica High=No apagar, Low=Se puede apagar
+const int RaspState_IN    = 7;        // Señal de la raspberry que indica High = No apagar, Low = Se puede apagar
 const int PowerOnOff_OUT  = 8;        // Señal que enciende el transistor, permitiendo alimentar todo el sistema. High=encendido todo el sistema, Low=Se corta la corriente de todo el sistema (A no ser que se apreiete el botón de encendido) 
 const int RaspOff_OUT     = 9;        // Señal que indica a la raspberry que comience el proceso de preparación de apagado. (High 0.5 segundos es un reset, por más de 2  sec es comienzo de proceso de apagado, y por más de 8 sec es apagado forzado)
-const int ROn_OUT        = 16;        // Señal que alimenta a la raspberry estando en high, reaultado de chequear la bateria previamente
+const int ROn_OUT         = 16;       // Señal que alimenta a la raspberry estando en high, reaultado de chequear la bateria previamente
 
 // Constantes funcionales
 const long Time_Out_Boot_Raspb = 120000; // Tiempo maximo de espera del arduino a que la raspberry bootee en ms
 const float Umbral_Low_Bat     = 3.5;    // Umbral de voltaje en el cual se acepta encender la Raspberry pero se exige caragador
-const float Umbral_Dead_Bat    = 3.0;    // Umbral donde se apaga el sistema 
+const float Umbral_Dead_Bat    = 3.3;    // Umbral donde se apaga el sistema
 
 // Definicion de variables
-int BState   = LOW;             // variable de lectura del boton de apagado, LOW es boton presionado
-int RState   = LOW;             // variable de lectura del la estado de la raspberry, HIGH es raspberry NO lista para apagar
-float StartTime = 0;            // Variables para contar el tiempo que esta apretado el boton  
-float ResultTime=0;
-int error=0;
+int BState       = LOW;          // Variable de lectura del boton de apagado, LOW es boton presionado
+int RState       = LOW;          // Variable de lectura del la estado de la raspberry, HIGH es raspberry NO lista para apagar
+float StartTime  = 0;            // Variables para contar el tiempo que esta apretado el boton  
+float ResultTime = 0;
+int error        = 0;
 
 // Function declaration
 void CheckDivices();
 void ApagadoNormal();
-void FatalErrorList ();
+void FatalErrorList();
 
 /////////////////////////////////////// IMAGENES PARA ANIMACIONES  /////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 static const unsigned char PROGMEM bandoneon1[] =
 {0x00,0x00,0x07,0xe0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 ,0x00,0x01,0x72,0x97,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x00
@@ -294,11 +296,46 @@ static const unsigned char PROGMEM IniciandoBanonberry[] =
 ,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 };
 
+static const unsigned char PROGMEM Bateria[] =
+{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x1f,0x87,0xe0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x1f,0x87,0xe0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x1f,0x87,0xe0,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xff,0xff,0xfc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xff,0xff,0xfc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x03,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x03,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xcf,0xcf,0xcc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xcf,0xcf,0xcc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x03,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x03,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xc0,0x00,0x0c,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xff,0xff,0xfc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0xff,0xff,0xfc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+};
+
 ////////////////////////////////////  FIN DE IMAGENES PARA ANIMACIONES  ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////  SETUP  //////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////  SETUP  ///////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setup(){
     // Defino input
@@ -311,45 +348,48 @@ void setup(){
     pinMode(ROn_OUT, OUTPUT);
     
     // Incializacion de salidas
-    digitalWrite(PowerOnOff_OUT, HIGH);     //Sistema con corriente pasando
-    digitalWrite(RaspOff_OUT, LOW);         //No se envia ninguna orden a la raspberry
+    digitalWrite(PowerOnOff_OUT, HIGH);     // Sistema con corriente pasando
+    digitalWrite(RaspOff_OUT, LOW);         // No se envia ninguna orden a la raspberry
     
     // Setup display
     delay(2000);                                // Le da tiempo al dispay que inicialice si se saca este delay el display no anda!
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // Initialize with the I2C addr 0x3C (for the 128x32)
-    display.display();
-    display.clearDisplay();                     // Clear the buffer.
-    display.setTextSize(2);
-    display.setTextColor(WHITE);
-    display.setCursor(0,0);
-    display.println("Iniciando");
-    display.display();
-    delay(2000);
-    
-    CheckDivices();
-    
-    // Setup Fuel Gauge
-    batteryMonitor.reset();
-    batteryMonitor.quickStart();
-    delay(2500);
-    
-    CheckBat();                                 // Chequeo estado de la bateria antes de energizar Raspberry
-    
-    digitalWrite(ROn_OUT, HIGH);                 // Enciendo Raspberry
+
+//    display.display();
+//    display.clearDisplay();
+//    display.setTextSize(2);
+//    display.setTextColor(WHITE);
+//    display.setCursor(0,0);
+//    display.println("Iniciando");
+//    display.display();
+//    delay(2000);
+
     display.clearDisplay();
     display.drawBitmap(0, 0, IniciandoBanonberry, 128, 32, 1);
     display.display();
-    delay(3000);     
+    delay(3000); 
+    
+//    CheckDivices();
+    
+    // Setup Fuel Gauge
+//    batteryMonitor.reset();
+    batteryMonitor.quickStart();
+//    delay(2500);
+    
+    CheckBat();                                  // Chequeo estado de la bateria antes de energizar Raspberry
+    
+    digitalWrite(ROn_OUT, HIGH);                 // Enciendo Raspberry    
 }
 
-////////////////////////////////// FIN  SETUP  ///////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////  FIN SETUP  ///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////  MAIN  ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-///////////////////////////////////////// MAIN  //////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop(){
+
+    ////////////////////////////////// INICIO //////////////////////////////////
     
     StartTime = millis();   // Inicio de time out de raspberry , prevencion de error de ausencia de señal de fallo de RState
     
@@ -367,29 +407,9 @@ void loop(){
         // Animaciones en el tiempo muerto de booteo de la raspberry
         
         display.clearDisplay();
-        display.drawBitmap(0, 0,  bandoneon1, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
-        display.display();
-        delay(200);
-        display.clearDisplay();
-        display.drawBitmap(0, 0,  bandoneon2, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
-        display.display();
-        delay(200);
-        display.clearDisplay();
-        display.drawBitmap(0, 0,  bandoneon3, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
-        display.display();
-        delay(200);
-        display.clearDisplay();
-        display.drawBitmap(0, 0,  bandoneon4, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
-        display.display();
-        delay(200);
-        display.clearDisplay();
-        display.drawBitmap(0, 0,  bandoneon5, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
-        display.display();
-        delay(200);
-        display.clearDisplay();
         display.drawBitmap(0, 0,  bandoneon6, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
         display.display();
-        delay(200);
+        delay(400);
         display.clearDisplay();
         display.drawBitmap(0, 0,  bandoneon5, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
         display.display();
@@ -401,65 +421,79 @@ void loop(){
         display.clearDisplay();
         display.drawBitmap(0, 0,  bandoneon3, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
         display.display();
-        delay(200);
+        delay(300);
         display.clearDisplay();
-        display.drawBitmap(0, 0,  bandoneon2, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
+        display.drawBitmap(0, 0,  bandoneon4, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
         display.display();
         delay(200);
         display.clearDisplay();
-        display.drawBitmap(0, 0,  bandoneon1, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
+        display.drawBitmap(0, 0,  bandoneon5, 128, 32, 1); //(ubicacion x, ubicacion y, nombre de la imagen, tamano x, tamano y, color)
         display.display();
-        delay(200); 
+        delay(200);
         
-        //Fin de animaciones
+        // Fin de animaciones
         
-        RState = digitalRead(RaspState_IN); // chquea si la señal de pronto para apagar esta ok. Si esta OK, el Rstate is LOW:
+        RState = digitalRead(RaspState_IN); // Chquea si la señal de pronto para apagar esta OK. Si esta OK, el Rstate es LOW.
     }
     
-    //////////////////////////////// ESTADO DE REPOSO /////////////////////////////////////////////////////////////////
+    ////////////////////////////////// REPOSO //////////////////////////////////
     
-    BState = digitalRead(ShutDownBot_IN);       // Para asegurarme que el estado del boton quede en high
+    BState = digitalRead(ShutDownBot_IN);       // Para asegurarme que el estado del boton quede en HIGH
     
     while (BState == HIGH){                     // Este while hace un loop cerrado hasta que se apriete el boton
         
-        BState = digitalRead(ShutDownBot_IN);   // Hasta que no se apriete el bot'on no sigo
-           
-        // Muestro estado de la bateria
-        display.clearDisplay();
-        display.setTextSize(2);
-        display.setTextColor(WHITE);
-        display.setCursor(0,0);
-        display.println("Bat:");
-        display.print("    ");
-        display.print(batteryMonitor.getSoC());
-        display.print("%");
-        display.display();
+        BState = digitalRead(ShutDownBot_IN);   // Hasta que no se apriete el boton no sigo
+
+        if (CheckBat()){
+          // Muestro estado de la bateria
+          display.clearDisplay();
+          
+          display.setTextSize(2);
+          display.setTextColor(WHITE);
+          display.setCursor(0,0);
+          
+          display.print("     ");
+          float v_cell = batteryMonitor.getVCell();
+          display.print(v_cell);
+          display.println("V");
+          
+          int soc = batteryMonitor.getSoC();
+          if (soc < 100){
+            display.print(" ");
+          }
+          display.print("      ");
+          display.print(soc);
+          display.print("%");
+  
+          display.drawBitmap(0, 0, Bateria, 128, 32, 1);
+          
+          display.display();
+        }    
         
-        CheckBat();
     }
 
-    ////////////////////////////////// APAGADO /////////////////////////////////////////////////////////////////////
+    ////////////////////////////////// APAGADO //////////////////////////////////
     
     StartTime = millis();                     // Mido cuanto tiempo en el que se apreto el boton
     ResultTime = millis() - StartTime;        // Inicializo ResultTime
     
-    while ((BState == LOW)&&(ResultTime<10000)){
+    while ((BState == LOW)&&(ResultTime < 10000)){
         BState = digitalRead(ShutDownBot_IN);       // Hasta que no se suelte el boton no sigo
         ResultTime = millis() - StartTime;          // Mido cuanto tiempo en el que se solto el boton
     }
     
-    if (ResultTime>=10000){
+    if (ResultTime >= 10000){
         ApagadoForzado();
     } else {
         ApagadoNormal();
     }
 }
        
-///////////////////////////////////////// FIN MAIN  ////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////  FIN MAIN  ////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////  FUNCIONES  //////////////////////////////////////////////
+////////////////////////////////////  FUNCIONES  ///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CheckDivices(){
     byte error, address;
@@ -470,7 +504,7 @@ void CheckDivices(){
     display.setTextColor(WHITE);
     display.setCursor(0,0);
     
-    for(address = 1; address < 127; address++ ){
+    for(address = 1; address < 127; address++){
         
         // The i2c_scanner uses the return value of
         // the Write.endTransmisstion to see if
@@ -480,21 +514,21 @@ void CheckDivices(){
         error = Wire.endTransmission();
         
         if (error == 0){
-            //No ponemos clear display para que entre todo
+            // No ponemos clear display para que entre todo
             display.print("Direccion 0x");
             display.println(address,HEX);
             display.display();
          
-            if (address==0x3C){
+            if (address == 0x3C){
                 display.println("Display OK!");  
-            } else if (address==0x36){
+            } else if (address == 0x36){
                 display.println("Fuel Gauge OK!");
             } else {
-                display.println("Error!");
+                display.println("ERROR!");
             }
             display.display();
             nDevices++;
-        } else if (error==4){
+        } else if (error == 4){
             display.clearDisplay();
             display.setTextSize(1);
             display.setTextColor(WHITE);
@@ -517,7 +551,7 @@ void CheckDivices(){
         display.display();
         delay(2000);
     } else {
-        //No ponemos clear display para que entre todo
+        // No ponemos clear display para que entre todo
         display.println("Todo OK!");
         display.display();
     }
@@ -525,34 +559,34 @@ void CheckDivices(){
 }                     
 
 void ApagadoNormal(){
-    //Muestro en pantalla apagado normal
+    // Muestro en pantalla apagado normal
     display.clearDisplay();
     display.setTextSize(2);
     display.setTextColor(WHITE);
     display.setCursor(0,0);
     display.println("Apagando");
     display.display();
-    delay (1000);    
+    delay(1000);    
     
     digitalWrite(RaspOff_OUT, HIGH);    // Se envia orden a raspberry
-    delay (1000);    
-    digitalWrite(RaspOff_OUT, LOW);     // Por el tiempo del high es un apagado normal
+    delay(1000);    
+    digitalWrite(RaspOff_OUT, LOW);     // Por el tiempo del HIGH es un apagado normal
     
     StartTime = millis(); // Inicio de time out de raspberry, prevencion de error de ausencia de señal de fallo de RState              
     while (RState == HIGH){
-        RState = digitalRead(RaspState_IN); // Chquea si la señal de pronto para apagar esta ok. Si esta OK, el Rstate es LOW
+        RState = digitalRead(RaspState_IN); // Chquea si la señal de pronto para apagar esta OK. Si esta OK, el Rstate es LOW
         
-        //Prevencion de error de ausencia de señal de fallo de RState
+        // Prevencion de error de ausencia de señal de fallo de RState
         ResultTime = millis() - StartTime;  // Mido cuanto tiempo paso sin estar pronto el booteo de la raspberry
         
         if (ResultTime > Time_Out_Boot_Raspb){ // Si la raspberry no bootea se apaga todo 
-            error=2;
+            error = 2;
             FatalErrorList();
         }
     }
     
     delay(12000);
-    digitalWrite(ROn_OUT, LOW); // Desenergizo la rasoberry un segundo antes que a todo el sistema
+    digitalWrite(ROn_OUT, LOW); // Desenergizo la raspberry un segundo antes que a todo el sistema
     delay(1000);
     
     display.clearDisplay();
@@ -560,47 +594,54 @@ void ApagadoNormal(){
     
     digitalWrite(PowerOnOff_OUT, LOW);
     delay(3000); // Para que el display no cambie hasta que se genere la accion de apagado o forzado
-    
-    error=3;
+
+    // No deberia llegar hasta este punto
+    error = 3;
     FatalErrorList();
 }
 
 void ApagadoForzado(){
-    //Muestro en pantalla apagado forzado
+    // Muestro en pantalla apagado forzado
     display.clearDisplay();
     display.setTextSize(2);
     display.setTextColor(WHITE);
     display.setCursor(0,0);
     display.println("Apagado");
-    display.print("Forzado");
+    display.print("forzado");
     display.display();
-    
     delay (2000);
     
-    while(digitalRead(ShutDownBot_IN)==LOW);
+    while(digitalRead(ShutDownBot_IN) == LOW);
     
     digitalWrite(PowerOnOff_OUT, LOW);
-    delay(3000); //Para que el display no cambie hasta que se genere la accion de apagado o forzado
-    
-    error=3;
+    delay(3000); // Para que el display no cambie hasta que se genere la accion de apagado o forzado
+
+    // No deberia llegar hasta este punto
+    error = 3;
     FatalErrorList();
 }
 
-void CheckBat(){
-    if (batteryMonitor.getVCell() < Umbral_Low_Bat){ 
-        display.clearDisplay();
-        display.setTextSize(2);
-        display.setTextColor(WHITE);
-        display.setCursor(0,0);
-        display.println("Conecte el");
-        display.print("cargador");
-        display.display();
-        delay(500);
+bool CheckBat(){
+    if (batteryMonitor.getVCell() < Umbral_Low_Bat){
+
+        if (digitalRead(ROn_OUT) || (batteryMonitor.getVCell() < Umbral_Dead_Bat)){
+          display.clearDisplay();
+          display.setTextSize(2);
+          display.setTextColor(WHITE);
+          display.setCursor(0,0);
+          display.println("Conecte el");
+          display.print("cargador");
+          display.display(); 
+        }               
         
         if (batteryMonitor.getVCell() < Umbral_Dead_Bat){
+            delay(3000);
             ApagadoNormal();
+            // No debe llegar a este punto
         }
+        return false;
     }
+    return true;
 }
 
 void FatalErrorList(){
@@ -609,21 +650,18 @@ void FatalErrorList(){
     display.setTextColor(WHITE);
     display.setCursor(0,0);
     display.print("Error ");
-    
     switch (error) {
       case 1:  display.print("1"); break;  // No se obtuvo la señal de boot OK de la Raspberry al Arduino. Se apagará todo el sistema segundos despues de mostrar el mensaje de error.
       case 2:  display.print("2"); break;  // BRasp_Off No se obtuvo la señal de finializacion del boot OK de la Raspberry al Arduino. Se apagará todo el sistema segundos despues de mostrar el mensaje. de error
       case 3:  display.print("3"); break;  // Por algún motivo la señal de apagado no funciona, o bien no se envía correctamente, o bien el circuito de desconexión tiene algún problema.
       default: display.print("4"); break;  // Error desconocido
     }
-    
     display.display();
-    
-    delay (10000);
+    delay(10000);
     
     digitalWrite(PowerOnOff_OUT, LOW);
     
-    display.clearDisplay();  // Clear the buffer.
+    display.clearDisplay();
     display.setTextSize(2);
     display.setTextColor(WHITE);
     display.setCursor(0,0);
