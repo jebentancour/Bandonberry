@@ -373,7 +373,7 @@ void setup(){
     
     // Setup Fuel Gauge
 //    batteryMonitor.reset();
-    batteryMonitor.quickStart();
+//    batteryMonitor.quickStart();
 //    delay(2500);
     
     CheckBat();                                  // Chequeo estado de la bateria antes de energizar Raspberry
