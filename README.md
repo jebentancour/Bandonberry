@@ -335,11 +335,12 @@ Sobre la programación y funciones de la librería [Funciones de libreria](http:
 
 Para poder usarlo en Arduino nos bajamos la librerías de aqui [Librería display](https://github.com/adafruit/Adafruit-GFX-Library).
 en caso de querer editar las animaciones se pueden realizar imagenes en Paint y luego se pasarlas a mapa de bits utilizando un conversor de jpg a [bitmap](http://www.digole.com/tools/PicturetoC_Hex_converter.php). El convertidor, genera la imagen del tamaño necesario con la siguiente configuración:
+````
 -Code format: Hex 0x
 -Diplay position X=0  Y=0
 -Width 128 , Height 32
 -Used for: Black White, for DIM
 -Adress in flash: 0x3C
-
+````
 
 
