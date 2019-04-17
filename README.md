@@ -315,7 +315,7 @@ Uso de pines:
 
 La señal de ``Boot_IN`` se baja pero la luz de la raspberry se termina de apagar 8 segundos después.
 
-![esquema_bms](esquema_bms.png)
+![esquema_bms](esquema.png)
 
 ### Conexión con la Raspberry
 
