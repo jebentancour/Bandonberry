@@ -247,7 +247,7 @@ echo "g_midi" | sudo tee -a /etc/modules
 sudo reboot
 ```
 
-:warning: Esto cambia el dispositivo de reproducción por defecto, es necesario arreglar el inicio del sintetizador:
+Esto cambia el dispositivo de reproducción por defecto, es necesario arreglar el inicio del sintetizador:
 
 ```
 sudo fluidsynth -i -s -a alsa -o audio.alsa.device=hw:1,0 -g 3 -c 2 -z 64 /home/pi/Bandonberry/bandoneon_v2.sf2 &
