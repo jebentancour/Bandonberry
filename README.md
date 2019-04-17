@@ -191,7 +191,7 @@ Soporta las siguientes velocidades (2014-07-05):
 | 32768| 7629 Hz |            |
 
 Una escritura o lectura necesita de la trasnmisión de 3 bytes **DEVICE OPCODE + REGISTER ADDRESS + REGISTER VALUE**.
-A la frecuencia seleccionada dicha tarea tarda, teóricamente: 3 * 8 / (7.8 MHz / 2) = **6.2 us**.
+A la frecuencia seleccionada dicha tarea tarda, teóricamente: 3 * 8 / 7.8 MHz = **3.1 us**.
 
 ### Librería
 
