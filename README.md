@@ -315,7 +315,7 @@ Uso de pines:
 
 La señal de ``Boot_IN`` se baja pero la luz de la raspberry se termina de apagar 8 segundos después.
 
-![esquema_bms](esquema.png)
+![esquema_bms](BMS_Esquematico_Selector.png)
 
 ### Conexión con la Raspberry
 
@@ -335,6 +335,7 @@ Sobre la programación y funciones de la librería [Funciones de libreria](http:
 
 Para poder usarlo en Arduino nos bajamos la librerías de aqui [Librería display](https://github.com/adafruit/Adafruit-GFX-Library).
 En caso de querer editar las animaciones se pueden realizar imágenes en algun software como Paint y luego se pasan a mapa de bits utilizando un conversor de jpg a [bitmap](http://www.digole.com/tools/PicturetoC_Hex_converter.php). El convertidor, genera la imagen del tamaño necesario para el display con la siguiente configuración:
+
 ````
 -Code format: Hex 0x
 -Diplay position X=0  Y=0
@@ -342,5 +343,3 @@ En caso de querer editar las animaciones se pueden realizar imágenes en algun s
 -Used for: Black White, for DIM
 -Adress in flash: 0x3C
 ````
-
-

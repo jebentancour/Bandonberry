@@ -34,7 +34,7 @@ const int ROn_OUT         = 16;       // Señal que alimenta a la raspberry esta
 // Constantes funcionales
 const long Time_Out_Boot_Raspb = 120000; // Tiempo maximo de espera del arduino a que la raspberry bootee en ms
 const float Umbral_Low_Bat     = 3.4;    // Umbral de voltaje en el cual se acepta encender la Raspberry pero se exige caragador
-const float Umbral_Dead_Bat    = 2.8;    // Umbral donde se apaga el sistema
+const float Umbral_Dead_Bat    = 3.0;    // Umbral donde se apaga el sistema
 
 // Definicion de variables
 int BState       = LOW;          // Variable de lectura del boton de apagado, LOW es boton presionado
