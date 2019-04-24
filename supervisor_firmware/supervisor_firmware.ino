@@ -461,6 +461,9 @@ void loop(){
           if (soc < 100){
             display.print(" ");
           }
+          if (soc < 10){
+            display.print(" ");
+          }
           display.print("      ");
           display.print(soc);
           display.print("%");
