@@ -5,6 +5,12 @@ import RPi.GPIO as GPIO
 import rtmidi_python as rtmidi
 import time
 
+#LED_PIN = 17
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setup(LED_PIN, GPIO.OUT)
+#GPIO.output(LED_PIN, GPIO.LOW)
+#led_state = False
+
 PIN = 4
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIN, GPIO.OUT)
@@ -28,8 +34,8 @@ CENTER = 0x40
 
 COLUMS = 6
 ROWS = 8
-NUM_OF_READS = 3
-DEBOUNCE_DELAY = 0.0015
+NUM_OF_READS = 2
+DEBOUNCE_DELAY = 0.001
 
 right_notes_matrix = [[[0, 0] for x in range(ROWS)] for y in range(COLUMS)]
 # Mano Derecha
@@ -128,7 +134,7 @@ def set_servo_position(new_position):
             servo.ChangeDutyCycle(5)
         if new_position == 1:
             # print 'servo open'
-            servo.ChangeDutyCycle(8)
+            servo.ChangeDutyCycle(10)
         position = new_position
         position_timestamp = time.time()
 
@@ -185,6 +191,14 @@ try:
     mcp0.setPullupPORTB(0xC0)
 
     while (True):
+
+        #if led_state:
+            #GPIO.output(LED_PIN, GPIO.HIGH)
+            #led_state = False
+        #else:
+            #GPIO.output(LED_PIN, GPIO.LOW)
+            #led_state = True
+
         left_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         right_new_data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         valve_new_data = 0x00
@@ -193,6 +207,7 @@ try:
             mcp0.writePORTB(~(0x01 << current_col))
             for i in range(NUM_OF_READS):
                 left_new_data[current_col] |= mcp1.readPORTA()
+                time.sleep(DEBOUNCE_DELAY)
                 right_new_data[current_col] |= mcp0.readPORTA()
                 time.sleep(DEBOUNCE_DELAY)
             if left_prev_data[current_col] != left_new_data[current_col]:

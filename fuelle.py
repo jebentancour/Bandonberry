@@ -5,6 +5,13 @@ import Adafruit_BMP.BMP085 as BMP085
 import rtmidi_python as rtmidi
 import time
 
+#import RPi.GPIO as GPIO
+#LED_PIN = 27
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setup(LED_PIN, GPIO.OUT)
+#GPIO.output(LED_PIN, GPIO.LOW)
+#led_state = False
+
 ## Oppciones de muestreo
 sensor = BMP085.BMP085(mode=BMP085.BMP085_STANDARD)
 ## sensor = BMP085.BMP085(mode=BMP085.BMP085_ULTRALOWPOWER)
@@ -49,6 +56,14 @@ try:
     # max_value = 0;
 
     while True:
+
+        #if led_state:
+            #GPIO.output(LED_PIN, GPIO.HIGH)
+            #led_state = False
+        #else:
+            #GPIO.output(LED_PIN, GPIO.LOW)
+            #led_state = True
+
         # Mido
         presion = sensor.read_pressure()
         # print('Presion = {0:0.2f} Pa'.format(presion))
@@ -65,6 +80,8 @@ try:
         # Checkeo extremos
         if value > 127:
             value = 127
+
+        presion = media;
 
         if (presion - media) > 0:
             # Cerrando
@@ -89,9 +106,9 @@ try:
             midi_usb_out.send_message([CONTROL | 0x02, VOLUME, value]) # Mano izquierda abriendo
             midi_usb_out.send_message([CONTROL | 0x03, VOLUME, 0x00])  # Mano izquierda cerrando
         else:
-            midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo
+            midi_out.send_message([CONTROL | 0x00, VOLUME, 127]) # Mano derecha abriendo
             midi_out.send_message([CONTROL | 0x01, VOLUME, 0x00]) # Mano derecha cerrando
-            midi_out.send_message([CONTROL | 0x02, VOLUME, 0x00]) # Mano izquierda abriendo
+            midi_out.send_message([CONTROL | 0x02, VOLUME, 127]) # Mano izquierda abriendo
             midi_out.send_message([CONTROL | 0x03, VOLUME, 0x00]) # Mano izquierda cerrando
             # MIDI USB
             midi_usb_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo
@@ -101,6 +118,8 @@ try:
 
         # Calculo la media
         media = media * 0.999 + presion * 0.001
+
+        time.sleep(0.001)
 
 finally:
     midi_out.close_port()
