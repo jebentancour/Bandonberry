@@ -70,7 +70,7 @@ try:
 
         # Calculo
         value = abs(presion - media)
-        value = (value * 127) / 400
+        value = (value * 127) / 150
         # print('Volume = {0:0.2f}'.format(value))
 
         # if value > max_value:
