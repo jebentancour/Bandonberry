@@ -2,6 +2,8 @@
 
 El proyecto Bandonberry tiene como objetivo crear un simulador electrónico para el aprendizaje del bandoneón. Pretende ser una alternativa económica en comparación con un bandoneón, de forma de permitir el acceso a un instrumento por parte de los estudiantes. No solo se limita a reproducir su forma y sonido, sino que incorpora tecnologías que ayudan y estimulan el proceso de aprendizaje.
 
+![bandonberry](bandonberry.JPG)
+
 # Hardware
 
 ## PCBs
