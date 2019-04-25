@@ -81,8 +81,6 @@ try:
         if value > 127:
             value = 127
 
-        presion = media;
-
         if (presion - media) > 0:
             # Cerrando
             midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00])  # Mano derecha abriendo
@@ -106,9 +104,9 @@ try:
             midi_usb_out.send_message([CONTROL | 0x02, VOLUME, value]) # Mano izquierda abriendo
             midi_usb_out.send_message([CONTROL | 0x03, VOLUME, 0x00])  # Mano izquierda cerrando
         else:
-            midi_out.send_message([CONTROL | 0x00, VOLUME, 127]) # Mano derecha abriendo
+            midi_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo
             midi_out.send_message([CONTROL | 0x01, VOLUME, 0x00]) # Mano derecha cerrando
-            midi_out.send_message([CONTROL | 0x02, VOLUME, 127]) # Mano izquierda abriendo
+            midi_out.send_message([CONTROL | 0x02, VOLUME, 0x00]) # Mano izquierda abriendo
             midi_out.send_message([CONTROL | 0x03, VOLUME, 0x00]) # Mano izquierda cerrando
             # MIDI USB
             midi_usb_out.send_message([CONTROL | 0x00, VOLUME, 0x00]) # Mano derecha abriendo

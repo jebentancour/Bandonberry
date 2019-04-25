@@ -20,7 +20,9 @@ servo.start(0)
 SYNTH_PORT_NAME = "FLUID"
 USB_PORT_NAME = "f_midi"
 
-VELOCITY = 64
+LEFT_VELOCITY = 96
+RIGHT_VELOCITY = 64
+
 NOTE_ON = 0x90
 NOTE_OFF = 0x80
 
@@ -152,7 +154,7 @@ try:
                 print "Puerto sintetizador encontrado"
                 port_found = True
                 for note in range(128):
-                    midi_out.send_message([NOTE_OFF, note, VELOCITY])
+                    midi_out.send_message([NOTE_OFF, note, 127])
 
     midi_usb_out = rtmidi.MidiOut()
     port_found = False
@@ -217,18 +219,18 @@ try:
                     if new_bit != prev_bit:
                         if new_bit:
                             note = left_notes_matrix[current_col][current_row]
-                            midi_out.send_message([NOTE_OFF | 0x02, note[0], VELOCITY])
-                            midi_out.send_message([NOTE_OFF | 0x03, note[1], VELOCITY])
-                            midi_usb_out.send_message([NOTE_OFF | 0x02, note[0], VELOCITY])
-                            midi_usb_out.send_message([NOTE_OFF | 0x03, note[1], VELOCITY])
+                            midi_out.send_message([NOTE_OFF | 0x02, note[0], LEFT_VELOCITY])
+                            midi_out.send_message([NOTE_OFF | 0x03, note[1], LEFT_VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF | 0x02, note[0], 127])
+                            midi_usb_out.send_message([NOTE_OFF | 0x03, note[1], 127])
                             notes_playing -= 1
                             #print 'left_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = left_notes_matrix[current_col][current_row]
-                            midi_out.send_message([NOTE_ON | 0x02, note[0], VELOCITY])
-                            midi_out.send_message([NOTE_ON | 0x03, note[1], VELOCITY])
-                            midi_usb_out.send_message([NOTE_ON | 0x02, note[0], VELOCITY])
-                            midi_usb_out.send_message([NOTE_ON | 0x03, note[1], VELOCITY])
+                            midi_out.send_message([NOTE_ON | 0x02, note[0], LEFT_VELOCITY])
+                            midi_out.send_message([NOTE_ON | 0x03, note[1], LEFT_VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON | 0x02, note[0], 127])
+                            midi_usb_out.send_message([NOTE_ON | 0x03, note[1], 127])
                             notes_playing += 1
                             #print 'left_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
             if right_prev_data[current_col] != right_new_data[current_col]:
@@ -238,18 +240,18 @@ try:
                     if new_bit != prev_bit:
                         if new_bit:
                             note = right_notes_matrix[current_col][current_row]
-                            midi_out.send_message([NOTE_OFF | 0x00, note[0], VELOCITY])
-                            midi_out.send_message([NOTE_OFF | 0x01, note[1], VELOCITY])
-                            midi_usb_out.send_message([NOTE_OFF | 0x00, note[0], VELOCITY])
-                            midi_usb_out.send_message([NOTE_OFF | 0x01, note[1], VELOCITY])
+                            midi_out.send_message([NOTE_OFF | 0x00, note[0], RIGHT_VELOCITY])
+                            midi_out.send_message([NOTE_OFF | 0x01, note[1], RIGHT_VELOCITY])
+                            midi_usb_out.send_message([NOTE_OFF | 0x00, note[0], 127])
+                            midi_usb_out.send_message([NOTE_OFF | 0x01, note[1], 127])
                             notes_playing -= 1
                             #print 'right_OFF [{0}][{1}] {2}'.format(current_col, current_row, note)
                         else:
                             note = right_notes_matrix[current_col][current_row]
-                            midi_out.send_message([NOTE_ON | 0x00, note[0], VELOCITY])
-                            midi_out.send_message([NOTE_ON | 0x01, note[1], VELOCITY])
-                            midi_usb_out.send_message([NOTE_ON | 0x00, note[0], VELOCITY])
-                            midi_usb_out.send_message([NOTE_ON | 0x01, note[1], VELOCITY])
+                            midi_out.send_message([NOTE_ON | 0x00, note[0], RIGHT_VELOCITY])
+                            midi_out.send_message([NOTE_ON | 0x01, note[1], RIGHT_VELOCITY])
+                            midi_usb_out.send_message([NOTE_ON | 0x00, note[0], 127])
+                            midi_usb_out.send_message([NOTE_ON | 0x01, note[1], 127])
                             notes_playing += 1
                             #print 'right_ON [{0}][{1}] {2}'.format(current_col, current_row, note)
 
