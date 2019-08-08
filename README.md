@@ -16,8 +16,6 @@ Los archivos necesarios para fabricar la carcasa en impresora 3D se encuentran e
 
 # Software
 
-Se debe grabar en la SD de la Raspberry la imágen del siguiente link. Se dejó el usuario ``pi`` y contraseña ``raspberry`` por defecto.
-
 El software del Arduino se encuentra en la carpeta [supervisor_firmware](supervisor_firmware).
 
 En las secciones siguientes se encuentran las instrucciones para instalar los diferentes componentes del Bandonberry si se desea hacerlo manualmente en una instalación del sistema operativo en blanco.
